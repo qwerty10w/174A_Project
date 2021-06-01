@@ -34,6 +34,22 @@ public class Dataloader{
     }
   }
 
+  // public static void insert_customer(String name, String state, String pnumber, String email, String addy, int tax_id){
+  //   String[] args = [name, state, pnumber, email, addy];
+  //   String query = "INSERT INTO Customers(name, state, pnumber, email, address, tax_id)";
+  //   Connection conn = connect("jdbc:sqlite:E:/sqlite/db/chinook.db");
+  //   try{
+  //     PreparedStatement ps = conn.prepareStatement(query);
+  //     for(int i = 1; i < 6; i++){
+  //       ps.setString(i, args[i - 1]);
+  //     }
+  //     ps.setInt(6, tax_id)
+  //     ps.executeUpdate();
+  //   }catch (SQLException e){
+  //     System.out.println(e.getMessage());
+  //   }
+  // }
+
   public static void runSQL(String query){
     Connection conn = connect("jdbc:sqlite:E:/sqlite/db/chinook.db");
 
@@ -48,6 +64,7 @@ public class Dataloader{
   public static void main(String[] args){
     // String query = "CREATE TABLE Customers(\n"
     //     + "name CHAR(20) NOT NULL,\n"
+    //     + "address CHAR(20) NOT NULL,\n"
     //     + "state CHAR(2) NOT NULL,\n"
     //     + "pnumber CHAR(10) NOT NULL,\n"
     //     + "email CHAR(30) NOT NULL,\n"
@@ -61,21 +78,23 @@ public class Dataloader{
     //       + "user CHAR(20) NOT NULL,\n"
     //       + "type CHAR(1) NOT NULL,\n"
     //       + "balance REAL NOT NULL,\n"
-    //       + "FOREIGN KEY(user) REFERENCES Customers(username)"
+    //       + "FOREIGN KEY(user) REFERENCES Customers(username) \n"
+    //       + "ON UPDATE CASCADE ON DELETE CASCADE"
     //       + ");";
 
     // String query = "CREATE TABLE Actors(\n"
     //       + "symbol CHAR(3) PRIMARY KEY,\n"
     //       + "name CHAR(20) NOT NULL,\n"
     //       + "DOB CHAR(10) NOT NULL,\n"
-    //       + "price REAL NOT NULL\n"
+    //       + "price REAL NOT NULL,\n"
+    //       + "amount INT NOT NULL\n"
     //       + ");";
 
     // String query = "CREATE TABLE Closing_Prices(\n"
     //       + "symbol CHAR(3) NOT NULL,\n"
     //       + "date CHAR(10) NOT NULL,\n"
     //       + "price REAL NOT NULL,\n"
-    //       + "FOREIGN KEY(symbol) REFERENCES Actors(symbol),\n"
+    //       + "FOREIGN KEY(symbol) REFERENCES Actors(symbol) ON UPDATE CASCADE ON DELETE CASCADE,\n"
     //       + "PRIMARY KEY(symbol, date)"
     //       + ");";
 
@@ -83,8 +102,8 @@ public class Dataloader{
     //       + "ID INT NOT NULL,\n"
     //       + "symbol CHAR(3) NOT NULL,\n"
     //       + "amount INT NOT NULL,\n"
-    //       + "FOREIGN KEY(ID) REFERENCES Accounts(ID),\n"
-    //       + "FOREIGN KEY(symbol) REFERENCES Actors(symbol),\n"
+    //       + "FOREIGN KEY(ID) REFERENCES Accounts(ID) ON UPDATE CASCADE ON DELETE CASCADE,\n"
+    //       + "FOREIGN KEY(symbol) REFERENCES Actors(symbol) ON UPDATE CASCADE ON DELETE CASCADE,\n"
     //       + "PRIMARY KEY(ID, symbol)"
     //       + ");";
 
@@ -100,8 +119,8 @@ public class Dataloader{
     //       + "symbol CHAR(3) NOT NULL,\n"
     //       + "role CHAR(10) NOT NULL,\n"
     //       + "value REAL NOT NULL,\n"
-    //       + "FOREIGN KEY(ID) REFERENCES Movies(ID),\n"
-    //       + "FOREIGN KEY(symbol) REFERENCES Actors(symbol),\n"
+    //       + "FOREIGN KEY(ID) REFERENCES Movies(ID) ON UPDATE CASCADE,\n"
+    //       + "FOREIGN KEY(symbol) REFERENCES Actors(symbol) ON UPDATE CASCADE ON DELETE CASCADE,\n"
     //       + "PRIMARY KEY(symbol, ID)"
     //       + ");";
 
@@ -113,8 +132,8 @@ public class Dataloader{
     //       + "price REAL NOT NULL,\n"
     //       + "amount INT NOT NULL,\n"
     //       + "balance REAL NOT NULL,\n"
-    //       + "FOREIGN KEY(ID) REFERENCES Accounts(ID),\n"
-    //       + "FOREIGN KEY(symbol) REFERENCES Actors(symbol)\n"
+    //       + "FOREIGN KEY(ID) REFERENCES Accounts(ID) ON UPDATE CASCADE ON DELETE CASCADE,\n"
+    //       + "FOREIGN KEY(symbol) REFERENCES Actors(symbol) ON UPDATE CASCADE ON DELETE CASCADE\n"
     //       + ");";
 
     // String query = "CREATE TABLE Market_Transactions(\n"
@@ -123,7 +142,7 @@ public class Dataloader{
     //       + "amount REAL NOT NULL,\n"
     //       + "date CHAR(10) NOT NULL,\n"
     //       + "balance REAL NOT NULL,\n"
-    //       + "FOREIGN KEY(ID) REFERENCES Accounts(ID)\n"
+    //       + "FOREIGN KEY(ID) REFERENCES Accounts(ID) ON UPDATE CASCADE ON DELETE CASCADE\n"
     //       + ");";
 
 

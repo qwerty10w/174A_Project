@@ -1,0 +1,4 @@
+MOVIEID,Title,Year,Genre,Rating,Revenue($Million)
+2606,L.A. Confidential,1997,Action,7.8,842
+0421,A Perfect Murder,1998,Thriller,8.4,1230
+7612,Jerry Maguire,1996,Comedy,6.3,183

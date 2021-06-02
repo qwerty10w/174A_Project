@@ -22,11 +22,13 @@ public class Launcher extends JFrame {
 	JPanel boxPanel;
 	JPanel checkIt;
 	
-	Dataloader dl;
-
+	// Dataloader dl;
+	// Manager mn;
+	Customer cs; 
 	public Launcher(){
-
-		dl = new Dataloader();
+		cs = new Customer();
+		// dl = new Dataloader();
+		// mn = new Manager();
 
 		// try{
 		// 	db.start();
@@ -103,7 +105,9 @@ public class Launcher extends JFrame {
     			if (isAdmin.isSelected()){
 
     				try{
-    					id = dl.loginAdmin(name, password);
+    					// id = dl.loginAdmin(name, password);
+    					// id = mn.create_admin(name,password);
+    					id = cs.create_admin(name,password);
     				}
     				catch (Exception e){
     					e.printStackTrace();
@@ -111,7 +115,8 @@ public class Launcher extends JFrame {
     				
     				if(id != 0){
     					//call new Admin gui
-    					AdminView ad = new AdminView(dl, id);
+    					// AdminView ad = new AdminView(dl, id);
+    					AdminView ad = new AdminView(cs, id);
     					ad.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     					ad.setSize(1400,800);
     					ad.setVisible(true);
@@ -123,27 +128,31 @@ public class Launcher extends JFrame {
     			}
     			else if (signUp.isSelected()){
     				//call db signup function with username and password
-    				Signup su = new Signup(name, password, dl, id);
+    				// Signup su = new Signup(name, password, dl, id);
+    				Signup su = new Signup(name, password, cs, id);
     				frame.dispose();
     			}
     			else{
     				//proceed as normal to login user who already has an account
     				
     				try{
-    					id = dl.login(name, password);
+    					// id = dl.login(name, password);
+    					// id = mn.login(name, password);
+    					id = cs.login(name, password);
     				}
     				catch (Exception e){
     					e.printStackTrace();
     				}
 
-    				// if(id != 0){
-    				// 	GUI gui = new GUI(db, id);
-    				// 	gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    				// 	gui.setSize(700,800);
-    				// 	gui.setVisible(true);
-    				// 	gui.setResizable(false);
-    				// 	frame.dispose();
-    				// }
+    				if(id != 0){
+    					// GUI gui = new GUI(dl, id);
+    					GUI gui = new GUI(cs, id);
+    					gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    					gui.setSize(700,800);
+    					gui.setVisible(true);
+    					gui.setResizable(false);
+    					frame.dispose();
+    				}
     			}
     		}
 	} // actionPerformed

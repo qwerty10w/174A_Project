@@ -1,4 +1,4 @@
-package net.sqlitetutorial;
+// package net.sqlitetutorial;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -344,6 +344,6 @@ public class Dataloader{
 
     // runSQL(query);
     // load_data();
-    runSQL(query);
+    // runSQL(query);
   }
 }

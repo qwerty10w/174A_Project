@@ -46,15 +46,18 @@ public class GUI extends JFrame {
     private JLabel movieReviewsLabel;
 
     JScrollPane scroller;
-
-    Dataloader dl;
+    // Manager mn;
+    Customer cs;
+    // Dataloader dl;
     int id;
 
-    public GUI(Dataloader mydb, int myid) {
+    // public GUI(Dataloader mydb, int myid) {
+    public GUI(Customer mydb, int myid) {
 	super("Trader Interface"); // superclass constructor sets the title
 	setLayout(null);
-
-	dl = mydb;
+    cs = mydb;
+    // mn = mydb;
+	// dl = mydb;
 	id = myid;
 
 	FontUIResource fbold = new FontUIResource(Font.SANS_SERIF,Font.BOLD,14);

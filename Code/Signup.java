@@ -40,15 +40,18 @@ public class Signup extends JFrame {
 	JPanel six;
 	JPanel seven;
 
-	Dataloader dl;
+	// Dataloader dl;
+	// Manager mn; 
+	Customer cs;
 	int id;
 
-	public Signup(String username, String password, Dataloader mydb, int myid) {
-
+	// public Signup(String username, String password, Dataloader mydb, int myid) {
+	public Signup(String username, String password, Customer mydb, int myid) {
 		frame = new JFrame("Sign Up Information");
 		content = frame.getContentPane();
-
-		dl = mydb;
+		cs = mydb;
+		// mn = mydb
+		// dl = mydb;
 		id = myid;
 
 		done = new JButton("Sign Up");

@@ -1,4 +1,4 @@
-package net.sqlitetutorial;
+// package net.sqlitetutorial;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -85,7 +85,14 @@ public class Manager{
       System.out.println(e.getMessage());
     }
   }
-
+  public void create_admin(String username, String password){
+    System.out.println("In create_admin in manager class");
+    System.out.println("Attributes passed username: " + username + "password: " + password);
+  }
+  public void login(String username, String password){
+    System.out.println("In login in manager class");
+    System.out.println("Attributes passed username: " + username + "password: " + password);
+  }
   public void deposit(int acc_id, double amount){
     String query = "SELECT balance FROM Accounts WHERE Accounts.ID = ?";
     String query2 = "UPDATE Accounts SET balance = ? WHERE Accounts.ID = ?";

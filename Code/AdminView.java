@@ -4,7 +4,8 @@ import java.awt.event.*;
 import javax.swing.plaf.FontUIResource;
 
 public class AdminView extends JFrame {
-	Dataloader dl;
+	// Dataloader dl;
+	Customer cs;
 	int id;
 
 	JButton gmsButton;
@@ -38,11 +39,11 @@ public class AdminView extends JFrame {
 
 
 
-	public AdminView(Dataloader mydb, int myid){
+	public AdminView(Customer mydb, int myid){
 		super("Admin");
 		setLayout(null);
 
-		dl = mydb;
+		cs = mydb;
 		id = myid;
 
 		FontUIResource fbold = new FontUIResource(Font.SANS_SERIF,Font.BOLD,14);

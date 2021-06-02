@@ -90,6 +90,7 @@ public class Manager{
     String query3 = "INSERT INTO Market_Transactions(ID, type, amount, date, balance) VALUES(?,?,?,?,?)";
 
     try{
+      //Get current balance
       PreparedStatement ps = this.conn.prepareStatement(query);
       ps.setInt(1, acc_id);
       ResultSet rs = ps.executeQuery();
@@ -98,12 +99,14 @@ public class Manager{
       rs.close();
       ps.close();
 
+      //Set new balance
       PreparedStatement ps2 = this.conn.prepareStatement(query2);
       ps2.setDouble(1, new_balance);
       ps2.setInt(2, acc_id);
       ps2.executeUpdate();
       ps2.close();
 
+      //add entry in Market_Transactions
       PreparedStatement ps3 = this.conn.prepareStatement(query3);
       ps3.setInt(1, acc_id);
       ps3.setInt(2, 1);
@@ -123,6 +126,7 @@ public class Manager{
     String query3 = "INSERT INTO Market_Transactions(ID, type, amount, date, balance) VALUES(?,?,?,?,?)";
 
     try{
+      //Get current balance
       PreparedStatement ps = this.conn.prepareStatement(query);
       ps.setInt(1, acc_id);
       ResultSet rs = ps.executeQuery();
@@ -131,12 +135,14 @@ public class Manager{
       rs.close();
       ps.close();
 
+      //set new balance
       PreparedStatement ps2 = this.conn.prepareStatement(query2);
       ps2.setDouble(1, new_balance);
       ps2.setInt(2, acc_id);
       ps2.executeUpdate();
       ps2.close();
 
+      //add entry in Market_Transactions
       PreparedStatement ps3 = this.conn.prepareStatement(query3);
       ps3.setInt(1, acc_id);
       ps3.setInt(2, 0);

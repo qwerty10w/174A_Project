@@ -1,4 +1,4 @@
-package net.sqlitetutorial;
+// package net.sqlitetutorial;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -60,7 +60,27 @@ public class Dataloader{
       System.out.println(e.getMessage());
     }
   }
+  public int login(String username, String password) throws SQLException {
+    // String query = "select tax_ID from Customer where username = '" + username + "' and password = '" + password + "'";
+    // ResultSet rs = stmt.executeQuery (query);
+    int id =0;
+    // while (rs.next()){
+    //   id = rs.getInt("tax_ID");
+    // }
+    // rs.close();
+    return id;
+  }
 
+  public int loginAdmin(String username, String password) throws SQLException {
+    // String query = "select tax_ID from Customer where username = '" + username + "' and password = '" + password + "' and isAdmin = 'y'";
+    // ResultSet rs = stmt.executeQuery (query);
+    int id =0;
+    // while (rs.next()){
+    //   id = rs.getInt("tax_ID");
+    // }
+    // rs.close();
+    return id;
+  }
   public static void main(String[] args){
     // String query = "CREATE TABLE Customers(\n"
     //     + "name CHAR(20) NOT NULL,\n"
@@ -145,7 +165,7 @@ public class Dataloader{
     //       + "FOREIGN KEY(ID) REFERENCES Accounts(ID) ON UPDATE CASCADE ON DELETE CASCADE\n"
     //       + ");";
 
-
-    runSQL(query);
+    System.out.println("Entered HERE");
+    // runSQL(query);
   }
 }

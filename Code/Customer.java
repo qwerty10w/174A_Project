@@ -36,7 +36,7 @@ public class Customer{
 
   public String get_date(){
     String query = "SELECT * FROM Calendar";
-    String date;
+    String date = "FAILED";
     try{
       Statement s = this.conn.createStatement();
       ResultSet rs = s.executeQuery(query);
@@ -111,7 +111,7 @@ public class Customer{
         this.insert_customer(name, addy, state, pnumber, email, username, password, tax_id);
 
         //insert market account with 0 balance
-        this.insert_market_account(user, 0);
+        this.insert_market_account(username, 0);
 
         //store new customer info locally
         this.login(username, password);
@@ -188,7 +188,7 @@ public class Customer{
       ps3.setInt(1, this.market_id);
       ps3.setInt(2, 1);
       ps3.setDouble(3, amount);
-      ps3.setString(4, this.date);
+      ps3.setString(4, this.get_date());
       ps3.setDouble(5, new_balance);
       ps3.executeUpdate();
       ps3.close();
@@ -224,7 +224,7 @@ public class Customer{
       ps3.setInt(1, this.market_id);
       ps3.setInt(2, 0);
       ps3.setDouble(3, amount);
-      ps3.setString(4, this.date);
+      ps3.setString(4, this.get_date());
       ps3.setDouble(5, new_balance);
       ps3.executeUpdate();
       ps3.close();
@@ -411,7 +411,7 @@ public class Customer{
           ps3.setInt(1, this.stock_id);
           ps3.setString(2, symbol);
           ps3.setInt(3, 0);
-          ps3.setString(4, this.date);
+          ps3.setString(4, this.get_date());
           ps3.setDouble(5, curr_price);
           ps3.setDouble(6, amount);
           ps3.setDouble(7, balance);
@@ -438,7 +438,7 @@ public class Customer{
 
           //Add earnings to Market account
           double amount_to_add = (amount * curr_price) - 20;
-          this.add_balance(amount_to_add);
+          this.add_market_balance(amount_to_add);
         }
       }
     }catch (SQLException e){

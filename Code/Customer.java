@@ -1,5 +1,3 @@
-// package net.sqlitetutorial;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -11,7 +9,7 @@ import java.io.FileReader;
 import java.io.File;
 import java.io.IOException;
 
-public class Manager{
+public class Customer{
   //Member Vars
   public boolean open = true;
   public int day;
@@ -20,10 +18,10 @@ public class Manager{
   public String date;
   public Connection conn;
 
-  public Manager(){
-    this.conn = connect("jdbc:sqlite:E:/sqlite/db/chinook.db");
-    this.get_date();
-    this.date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
+  public Customer(){
+    // this.conn = connect("jdbc:sqlite:E:/sqlite/db/chinook.db");
+    // this.get_date();
+    // this.date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
   }
 
   public Connection connect(String url){
@@ -85,13 +83,15 @@ public class Manager{
       System.out.println(e.getMessage());
     }
   }
-  public void create_admin(String username, String password){
-    System.out.println("In create_admin in manager class");
+  public int create_admin(String username, String password){
+    System.out.println("In create_admin in Customer class");
     System.out.println("Attributes passed username: " + username + "password: " + password);
+    return 1;
   }
-  public void login(String username, String password){
-    System.out.println("In login in manager class");
+  public int login(String username, String password){
+    System.out.println("In login in Customer class");
     System.out.println("Attributes passed username: " + username + "password: " + password);
+    return 1;
   }
   public void deposit(int acc_id, double amount){
     String query = "SELECT balance FROM Accounts WHERE Accounts.ID = ?";
@@ -533,6 +533,6 @@ public class Manager{
   }
 
   public static void main(String[] args){
-    Manager m = new Manager();
+    Customer m = new Customer();
   }
 }

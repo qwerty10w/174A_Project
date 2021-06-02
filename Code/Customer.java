@@ -259,7 +259,7 @@ public class Customer{
     }
   }
 
-  public void buy(String symbol, int amount){
+  public boolean buy(String symbol, int amount){
     String query0 = "SELECT balance FROM Accounts WHERE Accounts.ID = ?";
     String query = "SELECT balance FROM Acounts WHERE Accounts.ID = ?";
     String query2 = "SELECT price FROM Actors WHERE Actors.symbol = ?";
@@ -348,9 +348,10 @@ public class Customer{
     }catch (SQLException e){
       System.out.println(e.getMessage());
     }
+    return success;
   }
 
-  public void sell(String symbol, int amount){
+  public boolean sell(String symbol, int amount){
     String query0 = "SELECT amount FROM Owns WHERE ID = ? AND symbol = ?";
     String query = "SELECT balance FROM Acounts WHERE Accounts.ID = ?";
     String query2 = "SELECT price FROM Actors WHERE Actors.symbol = ?";

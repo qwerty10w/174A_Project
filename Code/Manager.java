@@ -64,6 +64,8 @@ public class Manager{
       ps.setInt(3, year);
       ps.executeUpdate();
       ps.close();
+
+      this.get_date();
     }catch (SQLException e){
       System.out.println(e.getMessage());
     }
@@ -160,7 +162,7 @@ public class Manager{
     String query = "UPDATE Accounts SET balance = balance + ? WHERE Accounts.ID = ?";
     try{
       PreparedStatement ps = this.conn.prepareStatement(query);
-      ps.setdouble(1, amount);
+      ps.setDouble(1, amount);
       ps.setInt(2, acc_id);
       ps.executeUpdate();
       ps.close();
@@ -173,7 +175,7 @@ public class Manager{
     String query = "UPDATE Accounts SET balance = balance - ? WHERE Accounts.ID = ?";
     try{
       PreparedStatement ps = this.conn.prepareStatement(query);
-      ps.setdouble(1, amount);
+      ps.setDouble(1, amount);
       ps.setInt(2, acc_id);
       ps.executeUpdate();
       ps.close();
@@ -206,13 +208,13 @@ public class Manager{
       ps.setInt(1, acc_id);
       ResultSet rs = ps.executeQuery();
       double market_balance = rs.getDouble("balance");
-      int market_id = rs.getInt("ID")
+      int market_id = rs.getInt("ID");
       rs.close();
       ps.close();
 
       //Get current stock price
       PreparedStatement ps2 = this.conn.prepareStatement(query2);
-      ps2.setDouble(1, symbol);
+      ps2.setString(1, symbol);
       ResultSet rs2 = ps2.executeQuery();
       double price = rs2.getDouble("price");
       double total_price = (amount * price) + 20;
@@ -237,7 +239,7 @@ public class Manager{
         PreparedStatement ps4 = this.conn.prepareStatement(query4);
         ps4.setInt(1, acc_id);
         ps4.setString(2, symbol);
-        ResultSet rs4 = ps4.executeUpdate();
+        ResultSet rs4 = ps4.executeQuery();
         if(!rs4.next()){
           rs4.close();
           ps4.close();
@@ -260,7 +262,7 @@ public class Manager{
           ps5.close();
         }
         //subtract total price from market account
-        subtract_balance(market_id, total_price);
+        this.subtract_balance(market_id, total_price);
       }
     }catch (SQLException e){
       System.out.println(e.getMessage());
@@ -294,7 +296,7 @@ public class Manager{
         ps.setInt(1, acc_id);
         ResultSet rs = ps.executeQuery();
         double market_balance = rs.getDouble("balance");
-        int market_id = rs.getInt("ID")
+        int market_id = rs.getInt("ID");
         rs.close();
         ps.close();
 
@@ -322,7 +324,7 @@ public class Manager{
           ps3.setString(2, symbol);
           ps3.setInt(3, 0);
           ps3.setString(4, this.date);
-          ps3.setDouble(5, price);
+          ps3.setDouble(5, curr_price);
           ps3.setDouble(6, amount);
           ps3.setDouble(7, balance);
           ps3.executeUpdate();
@@ -347,8 +349,8 @@ public class Manager{
           }
 
           //Add earnings to Market account
-          double amount_to_add = (amount * price) - 20;
-          add_balance(market_id, amount_to_add);
+          double amount_to_add = (amount * curr_price) - 20;
+          this.add_balance(market_id, amount_to_add);
         }
       }
     }catch (SQLException e){
@@ -506,7 +508,7 @@ public class Manager{
       ResultSet rs = s.executeQuery(query);
       while(rs.next()){
         int acc_id = rs.getInt("ID");
-        update_stock_balance(acc_id);
+        this.update_stock_balance(acc_id);
       }
       rs.close();
     }catch (SQLException e){

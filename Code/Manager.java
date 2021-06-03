@@ -291,6 +291,20 @@ public class Manager{
     return dter;
   }
 
+  public String customer_report(String username)  {
+    int market_id = get_market_from_user(username);
+    int stock_id = get_stock_from_user(username);
+
+    double market_balance = get_balance(market_id);
+    double stock_balance = get_balance(stock_id);
+
+    String result = "User: " + username
+              + "\nMarket Account (ID " + String.valueOf(market_id) + "): $" + String.valueOf(market_balance)
+              + "\nStock Account (ID " + String.valueOf(stock_id) + "): $" + String.valueOf(stock_balance);
+
+    return result;
+  }
+
   //help functions
   public int get_market_from_user(String user){
     String query = "SELECT ID FROM Accounts WHERE user = ? AND type = 0";
@@ -1011,12 +1025,6 @@ public class Manager{
   public String monthly_statement(Manager mn) {
      return "monthly Statement";
   }
-  public String customer_report(String username)  {
-    //Generate a list of all accounts associated with a particular customer and the current balance.
-    // list all accounts associated with a username
-    // use username to find acc_id andcall get_balance(int acc_id) use username to find acc_id
-   return ("In customer_report username: " + username);
-  }
   public void add_interest() {
     return;
   }
@@ -1045,7 +1053,7 @@ public class Manager{
 
   public static void main(String[] args){
     Manager m = new Manager();
-    System.out.println(m.get_DTER(3));
+    System.out.println(m.customer_report("alfred"));
     // m.deposit(28, 100000);
     // m.buy(27, "SKB", 1000);
     // m.sell(27, "SKB", 1000);

@@ -883,16 +883,15 @@ public class Customer{
     }
   }
 
-
-
   public static void main(String[] args){
     Customer m = new Customer();
-    m.signup("Neil Sadhukhan", "test Address", "CA", "4088960412", "neil.sad@gmail.com", "test2", "te", 10000);
+    // m.signup("Neil Sadhukhan", "test Address", "CA", "4088960412", "neil.sad@gmail.com", "test2", "te", 10000);
     m.login("test2", "te");
     System.out.println(m.get_market_history());
     System.out.println(m.get_stock_history());
     System.out.println();
     System.out.println(m.get_actor_profile("SMD"));
+    System.out.println();
+    // System.out.println(m.get_top_movies(1995, 2000));
   }
 }
-

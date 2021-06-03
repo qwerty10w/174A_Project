@@ -24,9 +24,9 @@ public class Manager{
   public Connection conn;
 
   public Manager(){
-    // this.conn = connect("jdbc:sqlite:E:/sqlite/db/chinook.db");
-    // this.get_date();
-    // this.date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
+    this.conn = connect("jdbc:sqlite:E:/sqlite/db/chinook.db");
+    this.get_date();
+    this.date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
   }
 
 
@@ -44,6 +44,10 @@ public class Manager{
   }
 
   public void close_market(){
+    if(!check_market_open()){
+      System.out.println("Market already closed!");
+      return;
+    }
     this.open = false;
 
     String query = "SELECT symbol, price FROM Actors";
@@ -92,11 +96,14 @@ public class Manager{
   }
 
   public void open_market(){
+    if(check_market_open()){
+      System.out.println("Market already open!");
+      return;
+    }
     String query = "UPDATE Status SET open = 1";
     this.open = true;
     this.run_update(query);
   }
-
 
   public boolean check_market_open(){
     String query = "SELECT open FROM Status";
@@ -459,6 +466,9 @@ public class Manager{
     return earnings;
   }
 
+
+
+
   //STOCK AND MARKET ACCOUNT FUNCTIONS --------------------------------------------------
   public double get_balance(int acc_id){
     String query = "SELECT balance FROM Accounts WHERE Accounts.ID = ?";
@@ -554,17 +564,39 @@ public class Manager{
   public void accrue_interest(int acc_id){
     //Get avg daily balance and calculate interest
     double avg_balance = this.get_avg_daily_balance(acc_id, this.month, this.year);
+    if(avg_balance == -1){
+      System.out.println("Account ID: " + String.valueOf(acc_id) + " is less than 1 day old and cannot gain interest");
+      return;
+    }
+
     double interest = (0.02/12) * avg_balance;
 
     //Get current balance and calculate new balance
     double curr_balance = this.get_balance(acc_id);
     double new_balance = curr_balance + interest;
 
+    System.out.println("Adding $" + String.valueOf(interest) + " of interest to account ID " + String.valueOf(acc_id));
+
     //record transaction in transaction table
     this.insert_market_transaction(acc_id, 2, interest, new_balance);
 
     //add money to market account
     this.add_balance(acc_id, interest);
+  }
+
+  public void add_market_interest(){
+    String query = "SELECT ID FROM Accounts WHERE Accounts.type = 0";
+    try{
+      Statement s = this.conn.createStatement();
+      ResultSet rs = s.executeQuery(query);
+      while(rs.next()){
+        int acc_id = rs.getInt("ID");
+        this.accrue_interest(acc_id);
+      }
+      rs.close();
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
   }
 
   //helpers
@@ -1089,9 +1121,6 @@ public class Manager{
       // basically reset the data
      return;
   }
-  public void add_market_interest(){
-    return;
-  }
 
   public static void main(String[] args){
     Manager m = new Manager();
@@ -1107,4 +1136,3 @@ public class Manager{
     // System.out.println(m.get_monthly_statement("test2"));
   }
 }
-

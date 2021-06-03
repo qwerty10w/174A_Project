@@ -1,4 +1,5 @@
 package net.project;
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -207,7 +208,7 @@ public class AdminView extends JFrame {
 			}
 			else if (event.getSource() == generateDTER){
 				try{
-					// need to add month 
+					// need to add month
 					textArea.append(mn.get_DTER());
 				}
 				catch(Exception e){
@@ -235,10 +236,10 @@ public class AdminView extends JFrame {
 			else if (event.getSource() == setDate){
 				String full_date = dateTextField.getText();
 				String[] date_parts = full_date.split("-");
-				String mm = date_parts[0]; 
-				String dd = date_parts[1]; 
+				String mm = date_parts[0];
+				String dd = date_parts[1];
 				String yy = date_parts[2];
-				 
+
 				try{
 					// (int day, int month, int year)
 					mn.set_date(Integer.parseInt(dd),Integer.parseInt(mm),Integer.parseInt(yy));

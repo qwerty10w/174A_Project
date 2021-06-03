@@ -1,4 +1,5 @@
-// package net.project;
+package net.project;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
@@ -196,7 +197,7 @@ public class GUI extends JFrame {
 	                        }else{
 	                        	infoArea.append("Invalid Transaction, Deeposit Failed\n");
 	                        }
-                      } 
+                      }
                     }
                     else{
                         infoArea.append("The Market is closed.\n");
@@ -225,7 +226,7 @@ public class GUI extends JFrame {
 	                        }else{
 	                        	infoArea.append("Invalid Transaction, Withdraw Failed\n");
 	                        }
-	              
+
 	                    }
                    }
                     else{
@@ -278,7 +279,7 @@ catch (Exception e){
 else if (event.getSource() == sell){
        String strStockID = sellField1.getText();
        String strAmount = sellField2.getText();
-       // get rid of price 
+       // get rid of price
        // String strOrigPrice = origPrice.getText();
        // double doubleOrigPrice = Double.parseDouble(strOrigPrice);
        int amount = Integer.parseInt(strAmount);
@@ -301,7 +302,7 @@ else if (event.getSource() == sell){
           }else{
           	infoArea.append("Invalid Transaction, Sale Failed\n");
           }
-          
+
       }
       else{
           infoArea.append("You do not have enough shares in your stock account to sell " + amount + " shares of " + strStockID + "\n");

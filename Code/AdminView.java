@@ -265,7 +265,7 @@ public class AdminView extends JFrame {
 			}
 			else if(event.getSource() == openMarket){
 				try{
-					mn.toggle_market(true);
+					mn.open_market();
 				}
 				catch(Exception e){
 					e.printStackTrace();
@@ -274,7 +274,7 @@ public class AdminView extends JFrame {
 			}
 			else if(event.getSource() == closeMarket){
 				try{
-					mn.toggle_market(false);
+					mn.close_market();
 				}
 				catch(Exception e){
 					e.printStackTrace();

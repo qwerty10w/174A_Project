@@ -24,9 +24,9 @@ public class Manager{
   public Connection conn;
 
   public Manager(){
-    this.conn = connect("jdbc:sqlite:E:/sqlite/db/chinook.db");
-    this.get_date();
-    this.date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
+    // this.conn = connect("jdbc:sqlite:E:/sqlite/db/chinook.db");
+    // this.get_date();
+    // this.date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
   }
 
 
@@ -97,13 +97,6 @@ public class Manager{
     this.run_update(query);
   }
 
-  public void toggle_market(Boolean open) {
-   if(this.check_market_open()){
-     this.close_market();
-   }else{
-     this.open_market();
-   }
-  }
 
   public boolean check_market_open(){
     String query = "SELECT open FROM Status";

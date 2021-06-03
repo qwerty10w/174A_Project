@@ -310,6 +310,11 @@ public class Manager{
   //MARKET ACCOUNT FUNCTIONS -------------------------------------------------------------
   //transactions
   public boolean deposit(int acc_id, double amount){
+    if(amount < 0){
+      System.out.println("You can only deposit positive amounts");
+      return false;
+    }
+
     //get current balance and calculate new balance
     double balance = this.get_balance(acc_id);
     double new_balance = balance + amount;
@@ -324,12 +329,18 @@ public class Manager{
   }
 
   public boolean withdraw(int acc_id, int amount){
+    if(amount < 0){
+      System.out.println("You can only withdraw positive amounts");
+      return false;
+    }
+
     //get current balance and calculate new balance
     double balance = this.get_balance(acc_id);
     double new_balance = balance - amount;
 
     //fail if balance will become < 0
     if(new_balance < 0){
+      System.out.println("Not enough $$$");
       return false;
     }
 
@@ -398,7 +409,6 @@ public class Manager{
       System.out.println(e.getMessage());
     }
   }
-
 
   public void insert_closing_balance(int acc_id, double balance){
     String query = "INSERT INTO Daily_Market_Balance(ID, balance, date) \n"
@@ -879,6 +889,6 @@ public class Manager{
 
   public static void main(String[] args){
     Manager m = new Manager();
-    m.buy(26, "SKB", 3);
+    m.withdraw(25, 100000);
   }
 }

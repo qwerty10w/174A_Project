@@ -171,6 +171,10 @@ public class Customer{
   //MARKET ACCOUNT FUNCTIONS ----------------------------------------------------------------------
   //transactions
   public boolean deposit(double amount){
+    if(amount < 0){
+      System.out.println("You can only deposit positive amounts");
+      return false;
+    }
     //Get current balance and calculate new balance
     double balance = this.get_market_balance();
     double new_balance = balance + amount;
@@ -185,6 +189,11 @@ public class Customer{
   }
 
   public boolean withdraw(double amount){
+    if(amount < 0){
+      System.out.println("You can only withdraw positive amounts");
+      return false;
+    }
+
     //Get current balance and calculate new balance
     double balance = this.get_market_balance();
     double new_balance = balance - amount;
@@ -690,6 +699,6 @@ public class Customer{
     Customer m = new Customer();
     // m.signup("Neil Sadhukhan", "test Address", "CA", "4088960412", "neil.sad@gmail.com", "test", "te", 10000);
     // m.login("test", "te");
-    // m.buy("jfk", 6);
+    // m.withdraw(100000000);
   }
 }

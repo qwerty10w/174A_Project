@@ -107,7 +107,7 @@ public class Customer{
   }
 
   public boolean signup(String name, String addy, String state, String pnumber, String email, String username, String password, double init_deposit){
-    System.out.println("In login in Customer class name: " + name + " addy: " + addy + " state: " + state+ " pnumber: " + pnumber +
+    System.out.println("In signup in Customer class name: " + name + " addy: " + addy + " state: " + state+ " pnumber: " + pnumber +
       " email: " + email + " username: " + username + " password: " + password + " init_deposit: " + init_deposit);
     String query = "SELECT * FROM Customers WHERE username = ?";
     String query2 = "SELECT ID, type from Accounts WHERE user = ?";
@@ -156,7 +156,7 @@ public class Customer{
       for(int i = 1; i < 8; i++){
         ps.setString(i, args[i - 1]);
       }
-      // ps.setInt(8, Integer.parseInt(tax_id));
+      ps.setInt(8, tax_id);
       ps.executeUpdate();
     }catch (SQLException e){
       System.out.println(e.getMessage());
@@ -282,9 +282,6 @@ public class Customer{
       return false;
     }
 
-    //get initial stock account balance
-    double balance = this.get_stock_balance();
-
     //get market account balance
     double market_balance = this.get_market_balance();
 
@@ -292,8 +289,12 @@ public class Customer{
     double price = this.get_stock_price(symbol);
     double total_price = (amount * price) + 20;
 
-    if(total_price > market_balance){
-      System.out.println("Insuffienct Funds in Market Account! You need $" + String.valueOf(total_price) + ". \nCurrent Balance: " + String.valueOf(balance));
+    if((price == -1) || (total_price > market_balance)){
+      if(price == -1){
+        System.out.println("Stock " + symbol + " does not exist!");
+      }else{
+        System.out.println("Insuffienct Funds in Market Account! You need $" + String.valueOf(total_price) + ". \nCurrent Balance: " + String.valueOf(market_balance));
+      }
       success = false;
     }else{
       try{
@@ -348,26 +349,24 @@ public class Customer{
   }
 
   public boolean sell(String symbol, int amount){
-    String query0 = "SELECT amount FROM Owns WHERE ID = ? AND symbol = ?";
-    String query3 = "INSERT INTO Stock_Transactions(ID, symbol, type, date, price, amount, balance) VALUES(?,?,?,?,?,?,?)";
+    String query3 = "INSERT INTO Stock_Transactions(ID, symbol, type, date, price, amount, balance, earnings) VALUES(?,?,?,?,?,?,?,?)";
     String query4 = "UPDATE Owns SET amount = amount - ? WHERE ID = ? AND symbol = ?";
     String query5 = "DELETE FROM Owns WHERE ID = ? AND symbol = ?";
     boolean success = true;
+    int amount_owned = -1;
+
+    System.out.println("attempting to sell " + String.valueOf(amount) + " shares of " + symbol + " stock.");
 
     if(this.stock_id == -1){
       System.out.println("You do not have a stock account!");
       success = false;
+    }else{
+      amount_owned = this.get_num_shares(symbol);
     }
 
-    try{
-      //Get number of stocks owned
-      PreparedStatement ps0 = this.conn.prepareStatement(query0);
-      ps0.setInt(1, this.stock_id);
-      ResultSet rs0 = ps0.executeQuery();
-      int amount_owned = rs0.getInt("amount");
-      rs0.close();
-      ps0.close();
+    System.out.println("Currently own " + String.valueOf(amount_owned) + " shares");
 
+    try{
       //Check amount owned > amount trying to sell
       if(amount_owned < amount){
         System.out.println("Don't own enough stock! You own: " + String.valueOf(amount_owned) + " \nAttempting to sell: " + String.valueOf(amount));
@@ -375,17 +374,16 @@ public class Customer{
       }else{
         //get market account balance
         double market_balance = this.get_market_balance();
+        System.out.println("Current market balance = " + String.valueOf(market_balance));
 
-        //Check market account has > $20
+        //Check market account has >= $20
         if(market_balance < 20){
           System.out.println("Not enough money in Market Account! Need: $20 \nYou Have: " + String.valueOf(market_balance));
           success = false;
         }else{
           //Get current price of stock
           double curr_price = this.get_stock_price(symbol);
-
-          //Get current balance of stock account
-          double balance = this.get_stock_balance();
+          System.out.println("after get curr_price");
 
           //Edit owned
           if(amount_owned - amount == 0){
@@ -404,6 +402,7 @@ public class Customer{
             ps4.executeUpdate();
             ps4.close();
           }
+          System.out.println("after edit owned");
 
           //Enter into Stock_Transaction
           double earnings = this.compute_earnings(symbol, amount, curr_price);
@@ -421,10 +420,12 @@ public class Customer{
           ps3.executeUpdate();
           ps3.close();
 
+          System.out.println("after get insert into Stock_Transactions");
 
           //Add earnings to Market account
           double amount_to_add = (amount * curr_price) - 20;
           this.add_market_balance(amount_to_add);
+          System.out.println("after get add earnings to market account");
         }
       }
     }catch (SQLException e){
@@ -480,7 +481,9 @@ public class Customer{
       PreparedStatement ps = this.conn.prepareStatement(query);
       ps.setString(1, symbol);
       ResultSet rs = ps.executeQuery();
-      price = rs.getDouble("price");
+      if(rs.next()){
+        price = rs.getDouble("price");
+      }
       rs.close();
       ps.close();
     }catch (SQLException e){
@@ -674,7 +677,6 @@ public class Customer{
     }
   }
 
-
   public void run_create_query(String query){
     try{
       Statement s = this.conn.createStatement();
@@ -686,5 +688,8 @@ public class Customer{
 
   public static void main(String[] args){
     Customer m = new Customer();
+    // m.signup("Neil Sadhukhan", "test Address", "CA", "4088960412", "neil.sad@gmail.com", "test", "te", 10000);
+    // m.login("test", "te");
+    // m.buy("jfk", 6);
   }
 }

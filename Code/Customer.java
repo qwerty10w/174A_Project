@@ -6,10 +6,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.File;
 import java.io.IOException;
+
+import java.util.ArrayList;
 
 public class Customer{
   //Member Vars
@@ -304,18 +307,6 @@ public class Customer{
         System.out.println("Insuffienct Funds in Market Account! You need $" + String.valueOf(total_price) + ". \nCurrent Balance: " + String.valueOf(balance));
         success = false;
       }else{
-        //add entry in Stock_Transactions
-        PreparedStatement ps3 = this.conn.prepareStatement(query3);
-        ps3.setInt(1, this.stock_id);
-        ps3.setString(2, symbol);
-        ps3.setInt(3, 1);
-        ps3.setString(4, this.get_date());
-        ps3.setDouble(5, price);
-        ps3.setDouble(6, amount);
-        ps3.setDouble(7, balance);
-        ps3.executeUpdate();
-        ps3.close();
-
         //check to see if customer already owns this stock
         PreparedStatement ps4 = this.conn.prepareStatement(query4);
         ps4.setInt(1, this.stock_id);
@@ -342,6 +333,21 @@ public class Customer{
           ps5.executeUpdate();
           ps5.close();
         }
+
+        double updated_balance = this.update_stock_balance();
+
+        //add entry in Stock_Transactions
+        PreparedStatement ps3 = this.conn.prepareStatement(query3);
+        ps3.setInt(1, this.stock_id);
+        ps3.setString(2, symbol);
+        ps3.setInt(3, 1);
+        ps3.setString(4, this.get_date());
+        ps3.setDouble(5, price);
+        ps3.setDouble(6, amount);
+        ps3.setDouble(7, updated_balance);
+        ps3.executeUpdate();
+        ps3.close();
+
         //subtract total price from market account
         this.subtract_market_balance(total_price);
       }
@@ -379,7 +385,7 @@ public class Customer{
         System.out.println("Don't own enough stock! You own: " + String.valueOf(amount_owned) + " \nAttempting to sell: " + String.valueOf(amount));
         success = false;
       }else{
-        //get market account id and balance
+        //get market account balance
         PreparedStatement ps = this.conn.prepareStatement(query);
         ps.setInt(1, this.market_id);
         ResultSet rs = ps.executeQuery();
@@ -406,18 +412,6 @@ public class Customer{
           double balance = rs_get_stock_balance.getDouble("balance");
           ps2.close();
 
-          //Enter into Stock_Transactions
-          PreparedStatement ps3 = this.conn.prepareStatement(query3);
-          ps3.setInt(1, this.stock_id);
-          ps3.setString(2, symbol);
-          ps3.setInt(3, 0);
-          ps3.setString(4, this.get_date());
-          ps3.setDouble(5, curr_price);
-          ps3.setDouble(6, amount);
-          ps3.setDouble(7, balance);
-          ps3.executeUpdate();
-          ps3.close();
-
           //Edit owned
           if(amount_owned - amount == 0){
             //Delete row if num of stocks owned is 0
@@ -436,6 +430,23 @@ public class Customer{
             ps4.close();
           }
 
+          //Enter into Stock_Transaction
+          double earnings = this.compute_earnings(symbol, amount, curr_price);
+          double updated_balance = this.update_stock_balance();
+
+          PreparedStatement ps3 = this.conn.prepareStatement(query3);
+          ps3.setInt(1, this.stock_id);
+          ps3.setString(2, symbol);
+          ps3.setInt(3, 0);
+          ps3.setString(4, this.get_date());
+          ps3.setDouble(5, curr_price);
+          ps3.setDouble(6, amount);
+          ps3.setDouble(7, updated_balance);
+          ps3.setDouble(8, earnings);
+          ps3.executeUpdate();
+          ps3.close();
+
+
           //Add earnings to Market account
           double amount_to_add = (amount * curr_price) - 20;
           this.add_market_balance(amount_to_add);
@@ -445,6 +456,44 @@ public class Customer{
       System.out.println(e.getMessage());
     }
     return success;
+  }
+
+  public double compute_earnings(String symbol, int amount, double curr_price){
+    String query = "SELECT amount, price FROM Stock_Transactions WHERE ID = ? AND symbol = ?";
+    ArrayList<Integer> amounts = new ArrayList<Integer>();
+    ArrayList<Double> prices = new ArrayList<Double>();
+    double earnings = 0;
+    try{
+      PreparedStatement ps = this.conn.prepareStatement(query);
+      ps.setInt(1, this.stock_id);
+      ps.setString(2, symbol);
+      ResultSet rs = ps.executeQuery();
+      int gathered = 0;
+      while(true){
+        if(rs.next()){
+          int pile = rs.getInt("amount");
+          double price = rs.getDouble("price");
+
+          if((pile + gathered) >= amount){
+            int amount_to_add = amount - gathered;
+            amounts.add(amount_to_add);
+            prices.add(price);
+            break;
+          }else{
+            amounts.add(pile);
+            prices.add(price);
+            gathered += pile;
+          }
+        }
+      }
+      rs.close();
+      for(int i = 0; i < amounts.size(); i++){
+        earnings += (curr_price - prices.get(i)) * amounts.get(i);
+      }
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+    return earnings;
   }
 
   public String select_user(int tax_id){
@@ -549,14 +598,14 @@ public class Customer{
     }
   }
 
-  public void update_stock_balance(int acc_id){
+  public double update_stock_balance(){
     String query1 = "SELECT * FROM Owns WHERE owns.ID = ?";
-    // Connection conn = connect("jdbc:sqlite:E:/sqlite/db/chinook.db");
+    double balance = 0;
+
     try{
       PreparedStatement ps = this.conn.prepareStatement(query1);
-      ps.setInt(1, acc_id);
+      ps.setInt(1, this.stock_id);
       ResultSet rs = ps.executeQuery();
-      double balance = 0;
       while(rs.next()){
         String stock = rs.getString("symbol");
         int amount = rs.getInt("amount");
@@ -579,7 +628,7 @@ public class Customer{
         String query3 = "UPDATE Accounts SET balance = ? WHERE ID = ? AND type = 1";
         PreparedStatement ps3 = this.conn.prepareStatement(query3);
         ps3.setDouble(1, balance);
-        ps3.setInt(2, acc_id);
+        ps3.setInt(2, this.stock_id);
         ps3.executeUpdate();
         ps3.close();
       }catch (SQLException e){
@@ -588,21 +637,7 @@ public class Customer{
     }catch (SQLException e){
       System.out.println(e.getMessage());
     }
-  }
-
-  public void update_all_stock_balances(){
-    String query = "SELECT ID FROM Accounts WHERE Accounts.type = 1";
-    try{
-      Statement s = this.conn.createStatement();
-      ResultSet rs = s.executeQuery(query);
-      while(rs.next()){
-        int acc_id = rs.getInt("ID");
-        this.update_stock_balance(acc_id);
-      }
-      rs.close();
-    }catch (SQLException e){
-      System.out.println(e.getMessage());
-    }
+    return balance;
   }
 
   public void run_create_query(String query){

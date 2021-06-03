@@ -1,3 +1,5 @@
+package net.project;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
@@ -183,7 +185,7 @@ public class GUI extends JFrame {
     	public void actionPerformed(ActionEvent event) {
 //     		//DEPOSIT
 //     		if (event.getSource() == deposit){
-    			
+
 //     			try{
 //                     if(db.checkMarketOpen()){
 //                         String strAmount = depositField.getText();
@@ -239,7 +241,7 @@ public class GUI extends JFrame {
 //                  if(balance >= ((price * amount) + 20)){
 //                   db.withdraw(((price * amount) + 20),id, true);
 //                   db.addStock(strStockID, amount, id, price);
-//                   infoArea.append(amount + " shares of " + strStockID + " were purchased.\n");	
+//                   infoArea.append(amount + " shares of " + strStockID + " were purchased.\n");
 //               }
 //               else{
 //                   infoArea.append("You do not have enough money in your Market Account to buy " + amount + " shares of " + strStockID + "\n");
@@ -255,8 +257,8 @@ public class GUI extends JFrame {
 // }
 // catch (Exception e){
 //     e.printStackTrace();
-// }	
-// }		
+// }
+// }
 //     		//SELL
 // else if (event.getSource() == sell){
 
@@ -274,7 +276,7 @@ public class GUI extends JFrame {
 //          if(shares >= amount){
 //           db.deposit(((price * amount) - 20),id, true);
 //           db.sellStock(strStockID, amount, id, price, doubleOrigPrice);
-//           infoArea.append(amount + " shares of " + strStockID + " were sold.\n");	
+//           infoArea.append(amount + " shares of " + strStockID + " were sold.\n");
 //       }
 //       else{
 //           infoArea.append("You do not have enough shares in your stock account to sell " + amount + " shares of " + strStockID + "\n");
@@ -290,7 +292,7 @@ public class GUI extends JFrame {
 // }
 // catch (Exception e){
 //     e.printStackTrace();
-// }			
+// }
 // }
 //     		//TOP MOVIES
 // else if (event.getSource() == topMovies){

@@ -1,3 +1,5 @@
+package net.project;
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -92,7 +94,7 @@ public class AdminView extends JFrame {
 		updateStockPrice.setBounds(20, 370, 300, 50);
 		updateStockPriceField = new JTextField();
 		updateStockPriceField.setBounds(350, 370, 150, 50);
-		
+
 		updateStockField = new JTextField();
 		updateStockField.setBounds(350, 370, 150, 50);
 		updateStockPriceField = new JTextField();
@@ -126,7 +128,7 @@ public class AdminView extends JFrame {
 		add(gmsButton); add(gmsTextField); add(gmsLabel); add(crButton);
 		add(crTextField); add(crLabel); add(addInterest);
 		add(generateDTER); add(listActiveCustomers); add(deleteTransactions); add(setDate);
-		add(dateTextField); add(dateLabel); add(scroller); add(updateStockPrice); 
+		add(dateTextField); add(dateLabel); add(scroller); add(updateStockPrice);
 		add(updateStockPriceLabel);add(updateStockPriceField); add(updateStockField); add(updateStockLabel);
 		add(clear); add(openMarket); add(closeMarket); add(reset); add(logout);
 
@@ -271,7 +273,7 @@ public class AdminView extends JFrame {
 				catch(Exception e){
 					e.printStackTrace();
 				}
-				
+
 			}
 			else if(event.getSource() == logout){
 				Launcher mjf = new Launcher();

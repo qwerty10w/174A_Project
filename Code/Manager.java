@@ -1,4 +1,4 @@
-// package net.sqlitetutorial;
+package net.project;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

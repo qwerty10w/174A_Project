@@ -1,3 +1,5 @@
+package net.project;
+
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.KeyEvent;
@@ -21,10 +23,10 @@ public class Launcher extends JFrame {
 	JCheckBox signUp;
 	JPanel boxPanel;
 	JPanel checkIt;
-	
+
 	// Dataloader dl;
 	// Manager mn;
-	Customer cs; 
+	Customer cs;
 	public Launcher(){
 		cs = new Customer();
 		// dl = new Dataloader();
@@ -36,7 +38,7 @@ public class Launcher extends JFrame {
 		// catch( Exception e){
 		// 	e.printStackTrace();
 		// }
-		
+
 
 		String title = "Login";
 		frame = new JFrame(title);
@@ -112,7 +114,7 @@ public class Launcher extends JFrame {
     				catch (Exception e){
     					e.printStackTrace();
     				}
-    				
+
     				if(id != 0){
     					//call new Admin gui
     					// AdminView ad = new AdminView(dl, id);
@@ -124,7 +126,7 @@ public class Launcher extends JFrame {
     					frame.dispose();
     				}
 
-    			
+
     			}
     			else if (signUp.isSelected()){
     				//call db signup function with username and password
@@ -134,7 +136,7 @@ public class Launcher extends JFrame {
     			}
     			else{
     				//proceed as normal to login user who already has an account
-    				
+
     				try{
     					// id = dl.login(name, password);
     					// id = mn.login(name, password);

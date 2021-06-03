@@ -1,3 +1,5 @@
+package net.project;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -22,7 +24,7 @@ public class Customer{
   public int stock_id = -1;
 
   public Customer(){
-    // this.conn = connect("jdbc:sqlite:E:/sqlite/db/chinook.db");
+    this.conn = connect("jdbc:sqlite:E:/sqlite/db/chinook.db");
     random = new Random();
   }
 
@@ -58,6 +60,7 @@ public class Customer{
     System.out.println("In login_admin in Customer class username: " + username + " password: " + password);
     return true;
   }
+
   public boolean login(String username, String password){
     System.out.println("In login in Customer class username: " + username + " password: " + password);
     String query = "SELECT password FROM Customers WHERE username = ?";
@@ -100,7 +103,7 @@ public class Customer{
   }
 
   public int signup(String name, String addy, String state, String pnumber, String email, String username, String password, double init_deposit){
-    System.out.println("In login in Customer class name: " + name + " addy: " + addy + " state: " + state+ " pnumber: " + pnumber+ 
+    System.out.println("In login in Customer class name: " + name + " addy: " + addy + " state: " + state+ " pnumber: " + pnumber+
       " email: " + email + " username: " + username + " password: " + password + " init_deposit: " + init_deposit);
     String query = "SELECT * FROM Customers WHERE username = ?";
     String query2 = "SELECT ID, type from Accounts WHERE user = ?";
@@ -662,4 +665,3 @@ public class Customer{
     Customer m = new Customer();
   }
 }
-

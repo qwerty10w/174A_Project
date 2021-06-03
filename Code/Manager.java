@@ -29,19 +29,6 @@ public class Manager{
     this.date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
   }
 
-  public void get_date(){
-    String query = "SELECT * FROM Calendar";
-    try{
-      Statement s = conn.createStatement();
-      ResultSet rs = s.executeQuery(query);
-      this.day = rs.getInt("day");
-      this.month = rs.getInt("month");
-      this.year = rs.getInt("year");
-      rs.close();
-    }catch (SQLException e){
-      System.out.println(e.getMessage());
-    }
-  }
 
   //ADMINISTRATIVE FUNCTIONS
   public Connection connect(String url){
@@ -64,7 +51,7 @@ public class Manager{
     String query3 = "UPDATE Status SET open = 0";
 
     try{
-      //recod stock closing prices
+      //record stock closing prices
       Statement s = this.conn.createStatement();
       ResultSet rs = s.executeQuery(query);
       while(rs.next()){
@@ -145,6 +132,21 @@ public class Manager{
       ps.close();
 
       this.get_date();
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+  }
+
+  public void get_date(){
+    String query = "SELECT * FROM Calendar";
+    try{
+      Statement s = conn.createStatement();
+      ResultSet rs = s.executeQuery(query);
+      this.day = rs.getInt("day");
+      this.month = rs.getInt("month");
+      this.year = rs.getInt("year");
+      this.date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
+      rs.close();
     }catch (SQLException e){
       System.out.println(e.getMessage());
     }

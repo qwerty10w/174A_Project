@@ -1,4 +1,4 @@
-// package net.project;
+package net.project;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -167,10 +167,20 @@ public class Customer{
   }
 
   public boolean check_market_open(){
-    return true;
+    String query = "SELECT open FROM Status";
+    boolean open = false;
+    try{
+      Statement s = this.conn.createStatement();
+      ResultSet rs = s.executeQuery(query);
+      int status = rs.getInt("open");
+      if(status == 1){
+        open = true;
+      }
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+    return open;
   }
-
-
 
   public boolean check_stock_exists(String symbol){
     String query = "SELECT * FROM Actors WHERE symbol = ?";
@@ -337,6 +347,7 @@ public class Customer{
     }
     return result;
   }
+
   //MARKET ACCOUNT FUNCTIONS ----------------------------------------------------------------------
   //transactions
   public boolean deposit(double amount){
@@ -872,16 +883,15 @@ public class Customer{
     }
   }
 
-
-
   public static void main(String[] args){
     Customer m = new Customer();
-    m.signup("Neil Sadhukhan", "test Address", "CA", "4088960412", "neil.sad@gmail.com", "test2", "te", 10000);
+    // m.signup("Neil Sadhukhan", "test Address", "CA", "4088960412", "neil.sad@gmail.com", "test2", "te", 10000);
     m.login("test2", "te");
     System.out.println(m.get_market_history());
     System.out.println(m.get_stock_history());
     System.out.println();
     System.out.println(m.get_actor_profile("SMD"));
+    System.out.println();
+    // System.out.println(m.get_top_movies(1995, 2000));
   }
 }
-

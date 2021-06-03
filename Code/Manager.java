@@ -1,4 +1,4 @@
-// package net.project;
+package net.project;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -61,6 +61,7 @@ public class Manager{
 
     String query = "SELECT symbol, price FROM Actors";
     String query2 = "SELECT ID, balance FROM Accounts WHERE type = 0";
+    String query3 = "UPDATE Status SET open = 0";
 
     try{
       //recod stock closing prices
@@ -83,6 +84,8 @@ public class Manager{
         this.insert_closing_balance(acc_id, bal);
       }
       rs2.close();
+
+      this.run_update(query3);
     }catch (SQLException e){
       System.out.println(e.getMessage());
     }
@@ -99,6 +102,36 @@ public class Manager{
     }else{
       this.set_date(this.day + 1, this.month, this.year);
     }
+  }
+
+  public void open_market(){
+    String query = "UPDATE Status SET open = 1";
+    this.open = true;
+    this.run_update(query);
+  }
+
+  public void toggle_market(Boolean open) {
+   if(this.check_market_open()){
+     this.close_market();
+   }else{
+     this.open_market();
+   }
+  }
+
+  public boolean check_market_open(){
+    String query = "SELECT open FROM Status";
+    boolean open = false;
+    try{
+      Statement s = this.conn.createStatement();
+      ResultSet rs = s.executeQuery(query);
+      int status = rs.getInt("open");
+      if(status == 1){
+        open = true;
+      }
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+    return open;
   }
 
   public void set_date(int day, int month, int year){
@@ -1027,7 +1060,7 @@ public class Manager{
     }
   }
 
-  public void run_create_query(String query){
+  public void run_update(String query){
     try{
       Statement s = this.conn.createStatement();
       s.execute(query);
@@ -1036,52 +1069,22 @@ public class Manager{
     }
   }
 
-
-  public String monthly_statement(Manager mn) {
-     return "monthly Statement";
-  }
-  public void add_interest() {
-    //For all market accounts, add the appropriate amount of monthly interest to the balance. This is usually
-    // done at the end of a month.
-    return;
-  }
-  public String generate_DTER(){
-    // Generate a list of all customers who have made more than $10,000 in the last month,
-    // including earnings from buying/selling stocks and interest. The residence state of each customer should
-    // also be listed.
-   return "generate_DTER";
-  }
-
-  public String active_customers() {
-   return "active_customers";
-  }
-  public void set_date(String date) {
-    return;
-   }
-  public void change_stock_price(double newPrice, String stockID) {
-    System.out.println("In change_stock_price newPrice: " + " newPrice " + " stockID " + stockID);
-    return;
-  }
-  public void toggle_market(Boolean open) {
-    if(this.open == true){
-      close_market();
-    }
-    // need to create function for opening market
-   return;
-  }
   public void reset_data() {
-    // basically reset the data 
-   return;
+      // basically reset the data
+     return;
   }
 
   public static void main(String[] args){
     Manager m = new Manager();
-    m.buy(27, "SMD", 3);
-    m.buy(27, "SKB", 2);
-    m.sell(27, "SMD", 3);
-    m.deposit(28, 3000);
-    m.withdraw(28, 2000);
     m.close_market();
-    System.out.println(m.get_monthly_statement("test2"));
+    // m.deposit(28, 100000);
+    // m.buy(27, "SKB", 1000);
+    // m.sell(27, "SKB", 1000);
+    // System.out.println(m.get_active_customers(3));
+    // m.buy(27, "SMD", 3);
+    // m.sell(27, "SMD", 3);
+    // m.withdraw(28, 2000);
+    // m.close_market();
+    // System.out.println(m.get_monthly_statement("test2"));
   }
 }

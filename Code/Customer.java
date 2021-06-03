@@ -1,4 +1,4 @@
-// package net.project;
+package net.project;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -128,6 +128,9 @@ public class Customer{
         //insert customer
         this.insert_customer(name, addy, state, pnumber, email, username, password, tax_ID);
 
+        //insert inactive stock account
+        this.insert_stock_account(username);
+
         //insert market account with 0 balance
         this.insert_market_account(username, 0);
 
@@ -165,6 +168,46 @@ public class Customer{
 
   public boolean check_market_open(){
     return true;
+  }
+
+  public String top_movies(int start, int end) {
+    return "top movies";
+  }
+
+  public boolean check_stock_exists(String symbol){
+    String query = "SELECT * FROM Actors WHERE symbol = ?";
+    boolean result = true;
+    try{
+      PreparedStatement ps = this.conn.prepareStatement(query);
+      ps.setString(1, symbol);
+      ResultSet rs = ps.executeQuery();
+      if(!rs.next()){
+        result = false;
+      }
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+    return result;
+  }
+
+  public String get_actor_profile(String stockID)  {
+    return "get actor profile";
+  }
+
+  public String movie_info(String title) throws SQLException{
+    return "movie info";
+  }
+
+  public String movie_review(String title) throws SQLException {
+    return "movie review";
+  }
+
+  public Boolean check_transaction_history(Customer cs)  {
+    return true;
+  }
+
+  public String get_transaction_history(Customer cs)  {
+    return "get transaction history";
   }
 
 
@@ -619,6 +662,36 @@ public class Customer{
     return balance;
   }
 
+  public void insert_market_account(String user, int balance){
+    //Inserts Market Account with given username and balance
+    String query = "INSERT INTO Accounts(user, type, balance) \n"
+            + "SELECT ?, \"0\", ? \n"
+            + "WHERE NOT EXISTS (SELECT * FROM Accounts WHERE user = ? AND type = \"0\")";
+    try{
+      PreparedStatement ps = this.conn.prepareStatement(query);
+      ps.setString(1, user);
+      ps.setInt(2, balance);
+      ps.setString(3, user);
+      ps.executeUpdate();
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+  }
+
+  public void insert_stock_account(String user){
+    // Inserts stock account with given username
+    String query = "INSERT INTO Accounts(user, type, balance) \n"
+            + "SELECT ?, \"1\", 0 \n"
+            + "WHERE NOT EXISTS (SELECT * FROM Accounts WHERE user = ? AND type = \"1\")";
+    try{
+      PreparedStatement ps = this.conn.prepareStatement(query);
+      ps.setString(1, user);
+      ps.setString(2, user);
+      ps.executeUpdate();
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+  }
 
 
   //FUNCTION TO REMOVE LATER PROBABLY ------------------------------------------------------------------------
@@ -655,37 +728,6 @@ public class Customer{
     }
   }
 
-  public void insert_stock_account(String user){
-    // Inserts stock account with given username
-    String query = "INSERT INTO Accounts(user, type, balance) \n"
-            + "SELECT ?, \"1\", 0 \n"
-            + "WHERE NOT EXISTS (SELECT * FROM Accounts WHERE user = ? AND type = \"1\")";
-    try{
-      PreparedStatement ps = this.conn.prepareStatement(query);
-      ps.setString(1, user);
-      ps.setString(2, user);
-      ps.executeUpdate();
-    }catch (SQLException e){
-      System.out.println(e.getMessage());
-    }
-  }
-
-  public void insert_market_account(String user, int balance){
-    //Inserts Market Account with given username and balance
-    String query = "INSERT INTO Accounts(user, type, balance) \n"
-            + "SELECT ?, \"0\", ? \n"
-            + "WHERE NOT EXISTS (SELECT * FROM Accounts WHERE user = ? AND type = \"0\")";
-    try{
-      PreparedStatement ps = this.conn.prepareStatement(query);
-      ps.setString(1, user);
-      ps.setInt(2, balance);
-      ps.setString(3, user);
-      ps.executeUpdate();
-    }catch (SQLException e){
-      System.out.println(e.getMessage());
-    }
-  }
-
   public void run_create_query(String query){
     try{
       Statement s = this.conn.createStatement();
@@ -695,120 +737,10 @@ public class Customer{
     }
   }
 
-  public String top_movies(int start, int end) {
-  // String query = "select M_NAME from CS174A.movies where M_RANKING > 4.9 and M_YEAR > '" + start + "' and M_YEAR < '" + end + "'";
-  // ResultSet rs = stmt.executeQuery(query);
-  // int m_id = 0; String result = "";
-  // while (rs.next()){
-  //   result = result + rs.getString("M_NAME") + "\n";
-  // }
-
-  // rs.close();
-  // return result;
-    return "top movies";
-  }
-
-public String get_actor_profile(String stockID)  {
-  // String query = "select * from Actors where actor_id = '" + stockID + "'";
-  // ResultSet rs = stmt.executeQuery(query);
-  // String actorId = ""; double price = 0; String name = ""; String dob = "";
-  // String title = ""; String role = ""; int year = 0; double contract = 0;
-  // while (rs.next()){
-  //   actorId = rs.getString("actor_id");
-  //   price = rs.getDouble("current_price");
-  //   name = rs.getString("name");
-  //   dob = rs.getString("dob");
-  //   title = rs.getString("movie_Title");
-  //   role = rs.getString("role");
-  //   year = rs.getInt("year");
-  //   contract = rs.getDouble("contract");
-  // }
-  // rs.close();
-  // String result = "Actor ID: " + actorId + " Current Stock Price: " + price + " Name: " + name + " Date of Birth: " + dob + 
-  // "\nMovie Title: " + title + " Role: " + role + " Year: " + year + " Contract Price: " + contract + "\n";
-  // return result;
-    return "get actor profile";
-}
-public String movie_info(String title) throws SQLException{
-  // String query = "select * from CS174A.movies where M_NAME = '" + title + "'";
-  // ResultSet rs = stmt.executeQuery(query);
-  // int m_id = 0; String m_name = ""; int m_year = 0; double m_ranking = 0;
-  // while (rs.next()){
-  //   m_id = rs.getInt("M_ID");
-  //   m_name = rs.getString("M_NAME");
-  //   m_year = rs.getInt("M_YEAR");
-  //   m_ranking = rs.getDouble("M_RANKING");
-  // }
-
-  // rs.close();
-  // String result = "Movie ID: " + m_id + " Name: " + m_name + " Year: " + m_year + " Ranking: " + m_ranking + "\n";
-  // return result;
-  return "movie info";
-}
-
-public String movie_review(String title) throws SQLException {
-  // String query = "select M_ID from CS174A.movies where M_NAME = '" + title + "'";
-  // ResultSet rs = stmt.executeQuery(query);
-  // int m_id = 0; String review = "";
-  // while (rs.next()){
-  //   m_id = rs.getInt("M_ID");
-  // }
-
-  // query = "select R_REVIEW from CS174A.reviews where R_ID =  '" + m_id + "'";
-  // rs = stmt.executeQuery(query);
-  // while (rs.next()){
-  //   review = rs.getString("R_REVIEW");
-  // }
-
-  // rs.close();
-  // String result = "Review for the Movie: " + title + " is: " + review + "\n";
-  // return result;
-  return "movie review";
-}
-
-public Boolean check_transaction_history(Customer cs)  {
-  // String market = ""; String stock = "";
-  // String query = "select description from Market_Transaction where tax_ID = '" + id + "'";
-  // ResultSet rs = stmt.executeQuery(query);
-  // while (rs.next()){
-  //   market = rs.getString("description");
-  // }
-  // query = "select description from Stock_Transaction where tax_ID = '" + id + "'";
-  // rs = stmt.executeQuery(query);
-  // while (rs.next()){
-  //   stock = rs.getString("description");
-  // }
-  // rs.close();
-  // if(market == null && stock == null){
-  //   return false;
-  // }
-  // else{
-  //   return true;
-  // }
-  return true;
-}
-
-public String get_transaction_history(Customer cs)  {
-  // String market = ""; String stock = ""; String result = "";
-  // String query = "select description from Market_Transaction where tax_ID = '" + id + "'";
-  // ResultSet rs = stmt.executeQuery(query);
-  // while (rs.next()){
-  //   result = result + rs.getString("description") + "\n";
-  // }
-  // query = "select description from Stock_Transaction where tax_ID = '" + id + "'";
-  // rs = stmt.executeQuery(query);
-  // while (rs.next()){
-  //   result = result + rs.getString("description") + "\n";
-  // }
-  // rs.close();
-  // return result;
-  return "get transaction history";
-}
-
-
-
   public static void main(String[] args){
     Customer m = new Customer();
+    m.signup("Neil Sadhukhan", "test Address", "CA", "4088960412", "neil.sad@gmail.com", "test2", "te", 10000);
+    // m.login("test", "te");
+    // m.withdraw(100000000);
   }
 }
-

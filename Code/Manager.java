@@ -536,7 +536,7 @@ public class Manager{
         ps4.setInt(1, acc_id);
         ps4.setString(2, symbol);
         ResultSet rs4 = ps4.executeQuery();
-        if(!rs4.next()){
+        if(!rs4.isBeforeFirst()){
           rs4.close();
           ps4.close();
           //If doesn't own stock, create new entry in owns
@@ -703,7 +703,7 @@ public class Manager{
       ps.setInt(1, acc_id);
       ps.setString(2, symbol);
       ResultSet rs = ps.executeQuery();
-      if(!rs.next()){
+      if(!rs.isBeforeFirst()){
         result = 0;
       }else{
         result = rs.getInt("amount");

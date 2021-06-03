@@ -72,7 +72,7 @@ public class Customer{
       PreparedStatement ps = this.conn.prepareStatement(query);
       ps.setString(1, username);
       ResultSet rs = ps.executeQuery();
-      if(!rs.next()){
+      if(!rs.isBeforeFirst()){
         System.out.println("username does not exist!");
         rs.close();
         success = false;
@@ -122,7 +122,7 @@ public class Customer{
       PreparedStatement ps = this.conn.prepareStatement(query);
       ps.setString(1, username);
       ResultSet rs = ps.executeQuery();
-      if(!rs.next()){
+      if(!rs.isBeforeFirst()){
         rs.close();
 
         //insert customer
@@ -181,7 +181,7 @@ public class Customer{
       PreparedStatement ps = this.conn.prepareStatement(query);
       ps.setString(1, symbol);
       ResultSet rs = ps.executeQuery();
-      if(!rs.next()){
+      if(!rs.isBeforeFirst()){
         result = false;
       }
     }catch (SQLException e){
@@ -190,8 +190,48 @@ public class Customer{
     return result;
   }
 
-  public String get_actor_profile(String stockID)  {
-    return "get actor profile";
+  public String get_actor_profile(String symbol){
+    String query = "SELECT * FROM Actors WHERE symbol = ?";
+    String query2 = "SELECT * FROM Contracts WHERE symbol = ?";
+    String summary = "Actor Profile: \n";
+
+    if(!this.check_stock_exists(symbol)){
+      return "Actor does not exist!";
+    }
+
+    try{
+      PreparedStatement ps = this.conn.prepareStatement(query);
+      ps.setString(1, symbol);
+      ResultSet rs = ps.executeQuery();
+      String name = rs.getString("name");
+      String dob = rs.getString("DOB");
+      double price = rs.getDouble("price");
+      summary += "Name: " + name + "\nDOB: " + dob + "\nPrice/Share: " + String.valueOf(price) + "\n\nContracts: \n";
+      rs.close();
+      ps.close();
+
+      PreparedStatement ps2 = this.conn.prepareStatement(query2);
+      ps2.setString(1, symbol);
+      ResultSet rs2 = ps2.executeQuery();
+      if(!rs2.isBeforeFirst()){
+        summary += "This actor has no contracts on record\n";
+        rs2.close();
+        ps2.close();
+      }else{
+        while(rs2.next()){
+          String role = rs2.getString("role");
+          double value = rs2.getDouble("value");
+          int id = rs2.getInt("ID");
+          summary += "Was " + role + " in movie ID " + String.valueOf(id) + ". Contract Value: $" + String.valueOf(value) + "\n";
+        }
+        rs2.close();
+        ps2.close();
+      }
+
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+    return summary;
   }
 
   public String movie_info(String title) throws SQLException{
@@ -414,7 +454,7 @@ public class Customer{
         ps4.setInt(1, this.stock_id);
         ps4.setString(2, symbol);
         ResultSet rs4 = ps4.executeQuery();
-        if(!rs4.next()){
+        if(!rs4.isBeforeFirst()){
           rs4.close();
           ps4.close();
           //If doesn't own stock, create new entry in owns
@@ -571,7 +611,7 @@ public class Customer{
       ps.setInt(1, this.stock_id);
       ps.setString(2, symbol);
       ResultSet rs = ps.executeQuery();
-      if(!rs.next()){
+      if(!rs.isBeforeFirst()){
         result = 0;
       }else{
         result = rs.getInt("amount");
@@ -798,9 +838,11 @@ public class Customer{
 
   public static void main(String[] args){
     Customer m = new Customer();
-    m.signup("Neil Sadhukhan", "test Address", "CA", "4088960412", "neil.sad@gmail.com", "test2", "te", 10000);
+    // m.signup("Neil Sadhukhan", "test Address", "CA", "4088960412", "neil.sad@gmail.com", "test2", "te", 10000);
     m.login("test2", "te");
     System.out.println(m.get_market_history());
     System.out.println(m.get_stock_history());
+    System.out.println();
+    System.out.println(m.get_actor_profile("SMD"));
   }
 }

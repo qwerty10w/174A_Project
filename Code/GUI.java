@@ -9,7 +9,7 @@ import javax.swing.plaf.FontUIResource;
 
 public class GUI extends JFrame {
 	private JButton deposit;
-	private JButton withdrawl;
+	private JButton withdraw;
 	private JButton buy;
 	private JButton sell;
 	private JButton showBalance;
@@ -22,13 +22,13 @@ public class GUI extends JFrame {
   private JButton logout;
 
   private JTextField depositField;
-  private JTextField withdrawlField;
+  private JTextField withdrawField;
   private JTextField buyField1;
   private JTextField buyField2;
   private JTextField sellField1;
   private JTextField sellField2;
-  private JTextField origPrice;
-  private JLabel origPriceLabel;
+  // private JTextField origPrice;
+  // private JLabel origPriceLabel;
   private JTextField startDate;
   private JTextField endDate;
   private JTextField actorProfile;
@@ -71,10 +71,10 @@ public class GUI extends JFrame {
 	depositField = new JTextField("",10); // 10 wide, and initially empty
 	depositField.setBounds(180,20,150,30);
 
-	withdrawl = new JButton("Withdrawl");
-	withdrawl.setBounds(350,20,150,40);
-	withdrawlField = new JTextField("",10); // 10 wide, and initially empty
-	withdrawlField.setBounds(510,20,150,30);
+	withdraw = new JButton("withdraw");
+	withdraw.setBounds(350,20,150,40);
+	withdrawField = new JTextField("",10); // 10 wide, and initially empty
+	withdrawField.setBounds(510,20,150,30);
 
 	buy = new JButton("Buy");
 	buy.setBounds(20,70,150,40);
@@ -97,10 +97,10 @@ public class GUI extends JFrame {
 	sellField2.setBounds(560,70,50,30);
 	sellAmt = new JLabel("Amount",JLabel.LEFT);
 	sellAmt.setBounds(560,100,150,20);
-  origPrice = new JTextField();
-  origPrice.setBounds(610, 70, 50, 30);
-  origPriceLabel = new JLabel("Price");
-  origPriceLabel.setBounds(620, 100, 150, 20);
+  // origPrice = new JTextField();
+  // origPrice.setBounds(610, 70, 50, 30);
+  // origPriceLabel = new JLabel("Price");
+  // origPriceLabel.setBounds(620, 100, 150, 20);
 
   topMovies = new JButton("Top Movies");
   topMovies.setBounds(20,130,150,40);
@@ -155,17 +155,17 @@ public class GUI extends JFrame {
   scroller.setBounds(20,325,640,440);
 
 	// add everything to the panel
-  add(deposit);add(withdrawl);add(buy);add(sell);
-  add(depositField);add(withdrawlField);add(buyField1); add(buyField2); add(sellField1); add(sellField2);
+  add(deposit);add(withdraw);add(buy);add(sell);
+  add(depositField);add(withdrawField);add(buyField1); add(buyField2); add(sellField1); add(sellField2);
   add(buyStock);add(buyAmt);add(sellStock);add(sellAmt); add(topMovies); add(startDate); add(endDate);
   add(startDateLabel); add(endDateLabel); add(viewActorProfile); add(actorProfile); add(actorProfileLabel);
   add(movieInfo); add(movieInfoField); add(movieInfoLabel); add(movieReviews); add(movieReviewsField); add(movieReviewsLabel);
-  add(transactionHistory); add(showBalance); add(scroller); add(origPrice); add(origPriceLabel); add(clear); add(logout);
+  add(transactionHistory); add(showBalance); add(scroller);  add(clear); add(logout);
 
 	// The only thing we want to wait for is a click on the button
     MyHandler handler = new MyHandler();
     deposit.addActionListener(handler);
-    withdrawl.addActionListener(handler);
+    withdraw.addActionListener(handler);
     buy.addActionListener(handler);
     sell.addActionListener(handler);
     topMovies.addActionListener(handler);
@@ -201,11 +201,11 @@ public class GUI extends JFrame {
 
             }
     		//WITHDRAW
-            else if (event.getSource() == withdrawl){
+            else if (event.getSource() == withdraw){
 
                try{
                 if(cs.check_market_open()){
-                    String strAmount = withdrawlField.getText();
+                    String strAmount = withdrawField.getText();
                     double amount = Double.parseDouble(strAmount);
                     double balance = 0;
                     balance = cs.get_market_balance();
@@ -238,9 +238,12 @@ public class GUI extends JFrame {
                  balance = cs.get_market_balance();
                  if(balance >= ((price * amount) + 20.0)){
                   cs.withdraw(((price * amount) + 20.0));
-                  cs.buy(strStockID,amount);
-                  // cs.addStock(strStockID, amount, id, price);
-                  infoArea.append(amount + " shares of " + strStockID + " were purchased.\n");
+                  boolean valid_buy = cs.buy(strStockID,amount);
+                  if(valid_buy){
+                  	infoArea.append(amount + " shares of " + strStockID + " were purchased.\n");
+                  }else{
+                  	infoArea.append("Invalid Transaction, Purchase Failed\n");
+                  }
               }
               else{
                   infoArea.append("You do not have enough money in your Market Account to buy " + amount + " shares of " + strStockID + "\n");
@@ -262,8 +265,9 @@ catch (Exception e){
 else if (event.getSource() == sell){
        String strStockID = sellField1.getText();
        String strAmount = sellField2.getText();
-       String strOrigPrice = origPrice.getText();
-       double doubleOrigPrice = Double.parseDouble(strOrigPrice);
+       // get rid of price 
+       // String strOrigPrice = origPrice.getText();
+       // double doubleOrigPrice = Double.parseDouble(strOrigPrice);
        int amount = Integer.parseInt(strAmount);
        double price = 0; double shares = 0;
        try{
@@ -274,7 +278,6 @@ else if (event.getSource() == sell){
          if(shares >= amount){
           cs.deposit(((price * amount) - 20));
           cs.sell(strStockID,amount);
-          // db.sellStock(strStockID, amount, id, price, doubleOrigPrice);
           infoArea.append(amount + " shares of " + strStockID + " were sold.\n");
       }
       else{

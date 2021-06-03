@@ -312,6 +312,33 @@ public class Customer{
     return summary;
   }
 
+  public String get_top_movies(int low, int high){
+    String query = "SELECT * FROM Movies WHERE \n"
+              + "rating > 7 AND \n year >= ? AND year <= ? ORDER BY rating DESC";
+    String result = "Top Movies between " + String.valueOf(low) + " and " + String.valueOf(high);
+    try{
+      PreparedStatement ps = this.conn.prepareStatement(query);
+      ps.setInt(1, low);
+      ps.setInt(2, high);
+      ResultSet rs = ps.executeQuery();
+      while(rs.next()){
+        int id = rs.getInt("ID");
+        String title = rs.getString("title");
+        int year = rs.getInt("year");
+        String genre = rs.getString("genre");
+        double rating = rs.getDouble("rating");
+        double rev = rs.getDouble("revenue");
+
+        result += "\nID: " + String.valueOf(id) + " - " + title
+              + " " + String.valueOf(year) + " scored " + String.valueOf(rating)
+              + " and grossed $" + String.valueOf(rev) + " million";
+      }
+
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+    return result;
+  }
 
   //MARKET ACCOUNT FUNCTIONS ----------------------------------------------------------------------
   //transactions
@@ -856,5 +883,7 @@ public class Customer{
     System.out.println(m.get_stock_history());
     System.out.println();
     System.out.println(m.get_actor_profile("SMD"));
+    System.out.println();
+    System.out.println(m.get_top_movies(1995, 2000));
   }
 }

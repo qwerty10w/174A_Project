@@ -265,7 +265,7 @@ public class Manager{
     return result;
   }
 
-  public String get_DTER(int month){
+  public String get_DTER(){
     String query = "SELECT username, state, name FROM Customers";
     String dter = "DTER: \n";
 
@@ -305,7 +305,7 @@ public class Manager{
     return result;
   }
 
-  public boolean wipe_transactions(){
+  public void wipe_transactions(){
     String query = "DELETE FROM Stock_Transactions";
     String query2 = "DELETE FROM Market_Transactions";
 
@@ -316,7 +316,7 @@ public class Manager{
       Statement s2 = this.conn.createStatement();
       s2.execute(query);
     }catch (SQLException e){
-      System.out.printn(e.getMessage());
+      System.out.println(e.getMessage());
     }
   }
 

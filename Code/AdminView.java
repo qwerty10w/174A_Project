@@ -162,21 +162,16 @@ public class AdminView extends JFrame {
 
 	private class MyHandler implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
-    		//DEPOSIT
+
+			//DEPOSIT
 			if (event.getSource() == gmsButton){
 				String get_user_name = gmsTextField.getText();
 				if (get_user_name.isEmpty()){
 					textArea.append("Please enter a username \n");
 				}
 				else{
-					String result = "";
-					try{
-						result = mn.get_monthly_statement(get_user_name);
-						textArea.append(result);
-					}
-					catch(Exception e){
-						e.printStackTrace();
-					}
+					String result = mn.get_monthly_statement(get_user_name);
+					textArea.append(result);
 				}
 			}
 			else if (event.getSource() == crButton){
@@ -185,43 +180,21 @@ public class AdminView extends JFrame {
 					textArea.append("Please enter a username \n");
 				}
 				else{
-					String result = "";
-					try{
-						result = mn.customer_report(get_user_name);
-						textArea.append(result);
-					}
-					catch(Exception e){
-						e.printStackTrace();
-					}
+					String result = mn.customer_report(get_user_name);
+					textArea.append(result);
 				}
 
 			}
 			else if (event.getSource() == addInterest){
 				String get_acc_id = addInterestTextField.getText();
-				try{// need to pass in acc_id
-					mn.accrue_interest(Integer.parseInt(get_acc_id));
-					textArea.append("Interest has been added to all accounts \n");
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
+				mn.accrue_interest(Integer.parseInt(get_acc_id));
+				textArea.append("Interest has been added to the account \n");
 			}
 			else if (event.getSource() == generateDTER){
-				try{
-					// need to add month
-					textArea.append(mn.get_DTER());
-				}
-				catch(Exception e){
-						e.printStackTrace();
-				}
+				textArea.append(mn.get_DTER());
 			}
 			else if (event.getSource() == listActiveCustomers){
-				try{
-					textArea.append(mn.get_active_customers());
-				}
-				catch(Exception e){
-						e.printStackTrace();
-				}
+				textArea.append(mn.get_active_customers());
 			}
 			else if (event.getSource() == deleteTransactions){
 				try{
@@ -256,41 +229,21 @@ public class AdminView extends JFrame {
 				String stockID = updateStockField.getText();
 				String stockPrice = updateStockPriceField.getText();
 				double stock_price = Double.parseDouble(stockPrice);
-				try{
-					mn.set_new_price(stockID,stock_price);
-					textArea.append("Price of " + stockID + " is now " + stock_price);
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
+
+				mn.set_new_price(stockID,stock_price);
+				textArea.append("Price of " + stockID + " is now " + stock_price);
 			}
 			else if(event.getSource() == openMarket){
-				try{
-					mn.open_market();
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
+				mn.open_market();
 				textArea.append("Market is now open \n");
 			}
 			else if(event.getSource() == closeMarket){
-				try{
-					mn.close_market();
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
+				mn.close_market();
 				textArea.append("Market is now closed \n");
 			}
 			else if(event.getSource() == reset){
-				try{
-					mn.reset_data();
-					textArea.append("Tables are restored to original state \n");
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
-
+				mn.reset_data();
+				textArea.append("Tables are restored to original state \n");
 			}
 			else if(event.getSource() == logout){
 				Launcher mjf = new Launcher();
@@ -298,12 +251,8 @@ public class AdminView extends JFrame {
 			}
 			else if(event.getSource() == marketInterest){
 				System.out.println("Entered here");
-				try{
-					mn.add_market_interest();
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
+				mn.add_market_interest();
+				textArea.append("Interest has been added to all accounts \n");
 			}
 		}
 	}

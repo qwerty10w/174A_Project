@@ -201,8 +201,6 @@ public class Signup extends JFrame {
 				double deposit = Double.parseDouble(initialDeposit);
 				// String taxId = taxIdTextField.getText();
 
-    			//call andrews signup function
-				userField.setText("made it");
 				try{
 					success = cs.signup(name,address,state, phoneNum, email, username, password, deposit);
 					// some sort of bug causing newCustomer to crash

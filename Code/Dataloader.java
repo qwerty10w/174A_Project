@@ -261,7 +261,7 @@ public class Dataloader{
     //     + "username CHAR(20) PRIMARY KEY,\n"
     //     + "password CHAR(10) NOT NULL\n"
     //     +");";
-
+    //
     // String query = "CREATE TABLE Accounts(\n"
     //       + "ID INTEGER PRIMARY KEY AUTOINCREMENT,\n"
     //       + "user CHAR(20) NOT NULL,\n"
@@ -270,7 +270,7 @@ public class Dataloader{
     //       + "FOREIGN KEY(user) REFERENCES Customers(username) \n"
     //       + "ON UPDATE CASCADE ON DELETE CASCADE"
     //       + ");";
-
+    //
     // String query = "CREATE TABLE Actors(\n"
     //       + "symbol CHAR(3) PRIMARY KEY,\n"
     //       + "name CHAR(20) NOT NULL,\n"
@@ -278,7 +278,7 @@ public class Dataloader{
     //       + "price REAL NOT NULL,\n"
     //       + "amount INT NOT NULL\n"
     //       + ");";
-
+    //
     // String query = "CREATE TABLE Closing_Prices(\n"
     //       + "symbol CHAR(3) NOT NULL,\n"
     //       + "date CHAR(10) NOT NULL,\n"
@@ -286,7 +286,7 @@ public class Dataloader{
     //       + "FOREIGN KEY(symbol) REFERENCES Actors(symbol) ON UPDATE CASCADE ON DELETE CASCADE,\n"
     //       + "PRIMARY KEY(symbol, date)"
     //       + ");";
-
+    //
     // String query = "CREATE TABLE Owns(\n"
     //       + "ID INT NOT NULL,\n"
     //       + "symbol CHAR(3) NOT NULL,\n"
@@ -295,14 +295,14 @@ public class Dataloader{
     //       + "FOREIGN KEY(symbol) REFERENCES Actors(symbol) ON UPDATE CASCADE ON DELETE CASCADE,\n"
     //       + "PRIMARY KEY(ID, symbol)"
     //       + ");";
-
+    //
     // String query = "CREATE TABLE Movies(\n"
     //       + "ID INT PRIMARY KEY,\n"
     //       + "title CHAR(20) NOT NULL,\n"
     //       + "year CHAR(4) NOT NULL,\n"
     //       + "rank INT NOT NULL\n"
     //       + ");";
-
+    //
     // String query = "CREATE TABLE Contracts(\n"
     //       + "ID INT NOT NULL,\n"
     //       + "symbol CHAR(3) NOT NULL,\n"
@@ -312,7 +312,7 @@ public class Dataloader{
     //       + "FOREIGN KEY(symbol) REFERENCES Actors(symbol) ON UPDATE CASCADE ON DELETE CASCADE,\n"
     //       + "PRIMARY KEY(symbol, ID)"
     //       + ");";
-
+    //
     // String query = "CREATE TABLE Stock_Transactions(\n"
     //       + "ID INT NOT NULL,\n"
     //       + "symbol CHAR(3) NOT NULL,\n"
@@ -324,7 +324,7 @@ public class Dataloader{
     //       + "FOREIGN KEY(ID) REFERENCES Accounts(ID) ON UPDATE CASCADE ON DELETE CASCADE,\n"
     //       + "FOREIGN KEY(symbol) REFERENCES Actors(symbol) ON UPDATE CASCADE ON DELETE CASCADE\n"
     //       + ");";
-
+    //
     // String query = "CREATE TABLE Market_Transactions(\n"
     //       + "ID INT NOT NULL,\n"
     //       + "type CHAR(1) NOT NULL,\n"
@@ -333,17 +333,17 @@ public class Dataloader{
     //       + "balance REAL NOT NULL,\n"
     //       + "FOREIGN KEY(ID) REFERENCES Accounts(ID) ON UPDATE CASCADE ON DELETE CASCADE\n"
     //       + ");";
-
+    //
     // String query = "CREATE TABLE Calendar(\n"
     //           + "day INT NOT NULL, \n"
     //           + "month INT NOT NULL, \n"
     //           + "year INT NOT NULL, \n"
     //           + "PRIMARY KEY(day, month, year));";
-
+    //
     // String query = "INSERT INTO Calendar(day, month, year) VALUES(3, 16, 2013)";
 
     // runSQL(query);
-    // load_data();
+    load_data();
     // runSQL(query);
   }
 }

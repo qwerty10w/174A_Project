@@ -188,8 +188,8 @@ public class GUI extends JFrame {
     			try{
                     if(cs.check_market_open()){
                         String strAmount = depositField.getText();
-                        double amount = Double.parseDouble(strAmount);
                         if(strAmount != null || !strAmount.isEmpty()){
+													double amount = Double.parseDouble(strAmount);
                         	System.out.println("Entered Here 1");
 	                        boolean valid_deposit= cs.deposit(amount);
 	                        if(valid_deposit){
@@ -330,7 +330,7 @@ else if (event.getSource() == topMovies){
    String result = "";
    try{
     result = cs.get_top_movies(intStartDate, intEndDate);
-    infoArea.append(result);
+    infoArea.append(result + "\n");
 }
 catch(Exception e){
     e.printStackTrace();

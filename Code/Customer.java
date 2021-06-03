@@ -1,4 +1,4 @@
-// package net.project;
+package net.project;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -24,7 +24,7 @@ public class Customer{
   public int stock_id = -1;
 
   public Customer(){
-    // this.conn = connect("jdbc:sqlite:E:/sqlite/db/chinook.db");
+    this.conn = connect("jdbc:sqlite:E:/sqlite/db/chinook.db");
     random = new Random();
   }
 
@@ -64,47 +64,46 @@ public class Customer{
   }
 
   public boolean login(String username, String password){
-    // System.out.println("In login in Customer class username: " + username + " password: " + password);
-    // String query = "SELECT password FROM Customers WHERE username = ?";
-    // String query2 = "SELECT ID, type from Accounts WHERE user = ?";
-    // boolean success = true;
-    // try{
-    //   PreparedStatement ps = this.conn.prepareStatement(query);
-    //   ps.setString(1, username);
-    //   ResultSet rs = ps.executeQuery();
-    //   if(!rs.next()){
-    //     System.out.println("username does not exist!");
-    //     rs.close();
-    //     success = false;
-    //   }else{
-    //     String pw = rs.getString("password");
-    //     if(password.equals(pw)){
-    //       rs.close();
-    //       this.username = username;
-    //       PreparedStatement ps2 = this.conn.prepareStatement(query2);
-    //       ps2.setString(1, username);
-    //       ResultSet rs2 = ps2.executeQuery();
-    //       while(rs2.next()){
-    //         int type = rs2.getInt("type");
-    //         int acc_id = rs2.getInt("ID");
-    //         if(type == 0){
-    //           this.market_id = acc_id;
-    //         }else if(type == 1){
-    //           this.stock_id = acc_id;
-    //         }
-    //       }
-    //     }else{
-    //       System.out.println("INCORRECT PASSWORD!");
-    //       rs.close();
-    //       success = false;
-    //     }
-    //   }
-    // }catch (SQLException e){
-    //   System.out.println(e.getMessage());
-    // }
-    // System.out.println("Sucessfully logged in as: " + this.username + ". \nMA: " + String.valueOf(this.market_id) + "\nSA: " + String.valueOf(this.stock_id));
-    // return success;
-    return true;
+    System.out.println("In login in Customer class username: " + username + " password: " + password);
+    String query = "SELECT password FROM Customers WHERE username = ?";
+    String query2 = "SELECT ID, type from Accounts WHERE user = ?";
+    boolean success = true;
+    try{
+      PreparedStatement ps = this.conn.prepareStatement(query);
+      ps.setString(1, username);
+      ResultSet rs = ps.executeQuery();
+      if(!rs.isBeforeFirst()){
+        System.out.println("username does not exist!");
+        rs.close();
+        success = false;
+      }else{
+        String pw = rs.getString("password");
+        if(password.equals(pw)){
+          rs.close();
+          this.username = username;
+          PreparedStatement ps2 = this.conn.prepareStatement(query2);
+          ps2.setString(1, username);
+          ResultSet rs2 = ps2.executeQuery();
+          while(rs2.next()){
+            int type = rs2.getInt("type");
+            int acc_id = rs2.getInt("ID");
+            if(type == 0){
+              this.market_id = acc_id;
+            }else if(type == 1){
+              this.stock_id = acc_id;
+            }
+          }
+        }else{
+          System.out.println("INCORRECT PASSWORD!");
+          rs.close();
+          success = false;
+        }
+      }
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+    System.out.println("Sucessfully logged in as: " + this.username + ". \nMA: " + String.valueOf(this.market_id) + "\nSA: " + String.valueOf(this.stock_id));
+    return success;
   }
 
   public boolean signup(String name, String addy, String state, String pnumber, String email, String username, String password, double init_deposit){
@@ -123,7 +122,7 @@ public class Customer{
       PreparedStatement ps = this.conn.prepareStatement(query);
       ps.setString(1, username);
       ResultSet rs = ps.executeQuery();
-      if(!rs.next()){
+      if(!rs.isBeforeFirst()){
         rs.close();
 
         //insert customer
@@ -176,14 +175,13 @@ public class Customer{
   }
 
   public boolean check_stock_exists(String symbol){
-    System.out.println("In check_stock_exists symbol " + symbol);
     String query = "SELECT * FROM Actors WHERE symbol = ?";
     boolean result = true;
     try{
       PreparedStatement ps = this.conn.prepareStatement(query);
       ps.setString(1, symbol);
       ResultSet rs = ps.executeQuery();
-      if(!rs.next()){
+      if(!rs.isBeforeFirst()){
         result = false;
       }
     }catch (SQLException e){
@@ -193,7 +191,6 @@ public class Customer{
   }
 
   public String get_actor_profile(String symbol){
-    System.out.println("In get_actor_profile symbol: " + symbol);
     String query = "SELECT * FROM Actors WHERE symbol = ?";
     String query2 = "SELECT * FROM Contracts WHERE symbol = ?";
     String summary = "Actor Profile: \n";
@@ -245,19 +242,18 @@ public class Customer{
     return "movie review";
   }
 
-  // public Boolean check_transaction_history(Customer cs)  {
-  //   return true;
-  // }
+  public Boolean check_transaction_history(Customer cs)  {
+    return true;
+  }
 
   public String get_transaction_history(){
     System.out.println("In get_transaction_history calling get_market_history + get_stock_history");
     String market_history_summary = get_market_history();
-    String stock_history_summary = get_stock_history(); 
+    String stock_history_summary = get_stock_history();
     return market_history_summary + "\n" + stock_history_summary;
   }
 
   public String get_market_history(){
-    System.out.println("In get_market_history");
     String get_market_transactions = "SELECT * FROM Market_Transactions WHERE ID = ?";
     String summary = "Market Account Transactions: \n";
     try{
@@ -288,7 +284,6 @@ public class Customer{
   }
 
   public String get_stock_history(){
-    System.out.println("In get_stock_history");
     String get_stock_transactions = "SELECT * FROM Stock_Transactions WHERE ID = ?";
     String summary = "Stock Transactions: \n";
     try{
@@ -364,7 +359,6 @@ public class Customer{
 
   //helpers
   public double get_market_balance(){
-    System.out.println("In get_market_balance");
     String query = "SELECT balance FROM Accounts WHERE Accounts.ID = ?";
     double balance = -1;
     try{
@@ -430,6 +424,10 @@ public class Customer{
   //STOCK ACCOUNT FUNCTIONS------------------------------------------------------------------------
   //transactions
   public boolean buy(String symbol, int amount){
+    if(amount <= 0){
+      System.out.println("You can only buy a positive number of shares");
+      return false;
+    }
     //function to buy stocks
     String query3 = "INSERT INTO Stock_Transactions(ID, symbol, type, date, price, amount, balance) VALUES(?,?,?,?,?,?,?)";
     String query4 = "SELECT * FROM Owns WHERE ID = ? AND symbol = ?";
@@ -463,7 +461,7 @@ public class Customer{
         ps4.setInt(1, this.stock_id);
         ps4.setString(2, symbol);
         ResultSet rs4 = ps4.executeQuery();
-        if(!rs4.next()){
+        if(!rs4.isBeforeFirst()){
           rs4.close();
           ps4.close();
           //If doesn't own stock, create new entry in owns
@@ -516,6 +514,11 @@ public class Customer{
     int amount_owned = -1;
 
     System.out.println("attempting to sell " + String.valueOf(amount) + " shares of " + symbol + " stock.");
+
+    if(amount <= 0){
+      System.out.println("You can only sell a positive number of shares");
+      return false;
+    }
 
     if(this.stock_id == -1){
       System.out.println("You do not have a stock account!");
@@ -620,7 +623,7 @@ public class Customer{
       ps.setInt(1, this.stock_id);
       ps.setString(2, symbol);
       ResultSet rs = ps.executeQuery();
-      if(!rs.next()){
+      if(!rs.isBeforeFirst()){
         result = 0;
       }else{
         result = rs.getInt("amount");
@@ -635,7 +638,6 @@ public class Customer{
 
   public double get_stock_price(String symbol){
     //Get current stock price
-    System.out.println("In get_stock_price symbol: "+ symbol);
     String query = "SELECT price FROM Actors WHERE Actors.symbol = ?";
     double price = -1;
     try{
@@ -846,10 +848,13 @@ public class Customer{
     }
   }
 
-
-
   public static void main(String[] args){
     Customer m = new Customer();
+    // m.signup("Neil Sadhukhan", "test Address", "CA", "4088960412", "neil.sad@gmail.com", "test2", "te", 10000);
+    m.login("test2", "te");
+    System.out.println(m.get_market_history());
+    System.out.println(m.get_stock_history());
+    System.out.println();
+    System.out.println(m.get_actor_profile("SMD"));
   }
 }
-

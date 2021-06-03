@@ -1,4 +1,4 @@
-// package net.project;
+package net.project;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -24,9 +24,9 @@ public class Manager{
   public Connection conn;
 
   public Manager(){
-    // this.conn = connect("jdbc:sqlite:E:/sqlite/db/chinook.db");
-    // this.get_date();
-    // this.date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
+    this.conn = connect("jdbc:sqlite:E:/sqlite/db/chinook.db");
+    this.get_date();
+    this.date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
   }
 
   public void get_date(){
@@ -37,6 +37,7 @@ public class Manager{
       this.day = rs.getInt("day");
       this.month = rs.getInt("month");
       this.year = rs.getInt("year");
+      rs.close();
     }catch (SQLException e){
       System.out.println(e.getMessage());
     }
@@ -101,7 +102,6 @@ public class Manager{
   }
 
   public void set_date(int day, int month, int year){
-    System.out.println("In set_date day: " + day + " month: " + month + " year " + year);
     String query = "UPDATE Calendar SET day = ?, month = ?, year = ?";
     try{
       PreparedStatement ps = this.conn.prepareStatement(query);
@@ -143,7 +143,6 @@ public class Manager{
   }
 
   public String get_monthly_statement(String username){
-    System.out.println("In get_monthly_statement username: " + username);
     String get_accounts = "SELECT ID, type FROM Accounts WHERE user = ?";
     String get_market_transactions = "SELECT * FROM Market_Transactions WHERE ID = ?";
     String get_stock_transactions = "SELECT * FROM Stock_Transactions WHERE ID = ?";
@@ -241,6 +240,41 @@ public class Manager{
     return summary;
   }
 
+  public String get_active_customers(int month){
+    String query = "SELECT user FROM Accounts WHERE ID IN (\n"
+            + "SELECT ID FROM (\n"
+                + "SELECT ID, SUM(amount) as total \n"
+                + "FROM Stock_Transactions \n"
+                + "WHERE date LIKE ? \n"
+                + "GROUP BY ID) AS t \n"
+            + "WHERE t.total >= 1000)";
+    String result = "Active Customers (>=1000 shares traded): \n";
+
+    try{
+      String like_string = String.valueOf(this.year) + "-" + String.valueOf(month) + "%";
+      PreparedStatement ps = this.conn.prepareStatement(query);
+      ps.setString(1, like_string);
+      ResultSet rs = ps.executeQuery();
+      while(rs.next()){
+        String user = rs.getString("user");
+        result += user + "\n";
+      }
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+    return result;
+  }
+
+  // public String get_DTER(int month){
+  //   double avg_balance = this.get_avg_daily_balance(acc_id, month, this.year);
+  //   double interest = (0.02/12) * avg_balance;
+  //
+  //   double stock_earnings = this.get_total_earnings()
+  //
+  //   String query = "SELECT username,"
+  // }
+
+  //help functions
   public double get_initial_market_balance(int acc_id, int year, int month){
     String get_initial_market_balance = "SELECT balance FROM Daily_Market_Balance WHERE ID = ? AND date LIKE ? ORDER BY date LIMIT 1";
     double balance = -1;
@@ -538,7 +572,7 @@ public class Manager{
         ps4.setInt(1, acc_id);
         ps4.setString(2, symbol);
         ResultSet rs4 = ps4.executeQuery();
-        if(!rs4.next()){
+        if(!rs4.isBeforeFirst()){
           rs4.close();
           ps4.close();
           //If doesn't own stock, create new entry in owns
@@ -705,7 +739,7 @@ public class Manager{
       ps.setInt(1, acc_id);
       ps.setString(2, symbol);
       ResultSet rs = ps.executeQuery();
-      if(!rs.next()){
+      if(!rs.isBeforeFirst()){
         result = 0;
       }else{
         result = rs.getInt("amount");
@@ -939,49 +973,39 @@ public class Manager{
    return ("In customer_report username: " + username);
   }
   public void add_interest() {
-    //For all market accounts, add the appropriate amount of monthly interest to the balance. This is usually
-    // done at the end of a month.
     return;
   }
   public String generate_DTER(){
-    // Generate a list of all customers who have made more than $10,000 in the last month,
-    // including earnings from buying/selling stocks and interest. The residence state of each customer should
-    // also be listed.
    return "generate_DTER";
   }
 
   public String active_customers() {
-   return "active_customers";
+   return "generate_DTER";
   }
   public void delete_transactions()  {
-    // Delete the list of transactions from each of the accounts, in preparation for a new month of processing.
    return;
   }
   public void set_date(String date) {
     return;
    }
   public void change_stock_price(double newPrice, String stockID) {
-    System.out.println("In change_stock_price newPrice: " + " newPrice " + " stockID " + stockID);
     return;
   }
   public void toggle_market(Boolean open) {
-    if(this.open == true){
-      close_market();
-    }
-    // need to create function for opening market
    return;
   }
   public void insert_data() {
-    // basically reset the data 
    return;
   }
 
   public static void main(String[] args){
     Manager m = new Manager();
+    m.deposit(28, 100000);
+    m.buy(27, "SKB", 1000);
+    m.sell(27, "SKB", 1000);
+    System.out.println(m.get_active_customers(3));
     // m.buy(27, "SMD", 3);
-    // m.buy(27, "SKB", 2);
     // m.sell(27, "SMD", 3);
-    // m.deposit(28, 3000);
     // m.withdraw(28, 2000);
     // m.close_market();
     // System.out.println(m.get_monthly_statement("test2"));

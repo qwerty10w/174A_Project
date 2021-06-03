@@ -1096,6 +1096,9 @@ public class Manager{
       // basically reset the data
      return;
   }
+  public void add_market_interest(){
+    return;
+  }
 
   public static void main(String[] args){
     Manager m = new Manager();
@@ -1111,3 +1114,4 @@ public class Manager{
     // System.out.println(m.get_monthly_statement("test2"));
   }
 }
+

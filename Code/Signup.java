@@ -1,4 +1,4 @@
-// package net.project;
+package net.project;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -203,7 +203,7 @@ public class Signup extends JFrame {
     			//call andrews signup function
 				userField.setText("made it");
 				try{
-					success = cs.signup(name, username, password, address, state, phoneNum, email, deposit);
+					success = cs.signup(name,address,state, phoneNum, email, username, password, deposit);
 					// some sort of bug causing newCustomer to crash
 					if(success){
 						nameTextField.setText("about to switch");

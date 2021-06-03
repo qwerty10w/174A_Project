@@ -1,4 +1,4 @@
-// package net.project;
+package net.project;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -38,6 +38,7 @@ public class AdminView extends JFrame {
 	JButton openMarket;
 	JButton closeMarket;
 	JButton reset;
+	JButton marketInterest;
 
 
 
@@ -121,6 +122,9 @@ public class AdminView extends JFrame {
 		logout = new JButton("Logout");
     	logout.setBounds(350, 510, 300, 50);
 
+    	marketInterest = new JButton("Add Interest Market");
+    	marketInterest.setBounds(20, 580, 300, 50);
+
 
 
 		textArea = new JTextArea();
@@ -135,7 +139,7 @@ public class AdminView extends JFrame {
 		add(generateDTER); add(listActiveCustomers); add(deleteTransactions); add(setDate);
 		add(dateTextField); add(dateLabel); add(scroller); add(updateStockPrice);
 		add(updateStockPriceLabel);add(updateStockPriceField); add(updateStockField); add(updateStockLabel);
-		add(clear); add(openMarket); add(closeMarket); add(reset); add(logout);
+		add(clear); add(openMarket); add(closeMarket); add(reset); add(logout);add(marketInterest);
 
 		MyHandler handler = new MyHandler();
 		gmsButton.addActionListener(handler);
@@ -151,6 +155,7 @@ public class AdminView extends JFrame {
 		clear.addActionListener(handler);
 		reset.addActionListener(handler);
 		logout.addActionListener(handler);
+		marketInterest.addActionListener(handler);
 
 	}
 
@@ -211,7 +216,7 @@ public class AdminView extends JFrame {
 			}
 			else if (event.getSource() == listActiveCustomers){
 				try{
-					textArea.append(mn.active_customers());
+					textArea.append(mn.get_active_customers());
 				}
 				catch(Exception e){
 						e.printStackTrace();
@@ -289,6 +294,15 @@ public class AdminView extends JFrame {
 			else if(event.getSource() == logout){
 				Launcher mjf = new Launcher();
 				dispose();
+			}
+			else if(event.getSource() == marketInterest){
+				System.out.println("Entered here");
+				try{
+					mn.add_market_interest();
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
 			}
 		}
 	}

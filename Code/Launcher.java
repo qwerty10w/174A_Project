@@ -1,4 +1,4 @@
-// package net.project;
+package net.project;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.KeyEvent;
@@ -109,7 +109,7 @@ public class Launcher extends JFrame {
     				try{
     					// id = dl.loginAdmin(name, password);
     					// id = mn.create_admin(name,password);
-    					login_success = cs.login_admin(name,password);
+    					login_success = mn.login(name,password);
     				}
     				catch (Exception e){
     					e.printStackTrace();

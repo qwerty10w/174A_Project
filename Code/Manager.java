@@ -265,16 +265,61 @@ public class Manager{
     return result;
   }
 
-  // public String get_DTER(int month){
-  //   double avg_balance = this.get_avg_daily_balance(acc_id, month, this.year);
-  //   double interest = (0.02/12) * avg_balance;
-  //
-  //   double stock_earnings = this.get_total_earnings()
-  //
-  //   String query = "SELECT username,"
-  // }
+  public String get_DTER(int month){
+    String query = "SELECT username, state, name FROM Customers";
+    String dter = "DTER: \n";
+
+    try{
+      Statement s = this.conn.createStatement();
+      ResultSet rs = s.executeQuery(query);
+      while(rs.next()){
+        String user = rs.getString("username");
+        int market_id = this.get_market_from_user(user);
+        double avg_balance = this.get_avg_daily_balance(market_id, this.month, this.year);
+        double interest = (0.02/12) * avg_balance;
+
+        int stock_id = this.get_stock_from_user(user);
+        double total_earnings = this.get_total_earnings(stock_id, this.year, this.month);
+
+        if((interest + total_earnings) > 10000){
+          dter += rs.getString("name") + " : " + rs.getString("state") + "\n";
+        }
+      }
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+    return dter;
+  }
 
   //help functions
+  public int get_market_from_user(String user){
+    String query = "SELECT ID FROM Accounts WHERE user = ? AND type = 0";
+    int market_id = -1;
+    try{
+      PreparedStatement ps = this.conn.prepareStatement(query);
+      ps.setString(1, user);
+      ResultSet rs = ps.executeQuery();
+      market_id = rs.getInt("ID");
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+    return market_id;
+  }
+
+  public int get_stock_from_user(String user){
+    String query = "SELECT ID FROM Accounts WHERE user = ? AND type = 1";
+    int stock_id = -1;
+    try{
+      PreparedStatement ps = this.conn.prepareStatement(query);
+      ps.setString(1, user);
+      ResultSet rs = ps.executeQuery();
+      stock_id = rs.getInt("ID");
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+    return stock_id;
+  }
+
   public double get_initial_market_balance(int acc_id, int year, int month){
     String get_initial_market_balance = "SELECT balance FROM Daily_Market_Balance WHERE ID = ? AND date LIKE ? ORDER BY date LIMIT 1";
     double balance = -1;
@@ -1000,10 +1045,11 @@ public class Manager{
 
   public static void main(String[] args){
     Manager m = new Manager();
-    m.deposit(28, 100000);
-    m.buy(27, "SKB", 1000);
-    m.sell(27, "SKB", 1000);
-    System.out.println(m.get_active_customers(3));
+    System.out.println(m.get_DTER(3));
+    // m.deposit(28, 100000);
+    // m.buy(27, "SKB", 1000);
+    // m.sell(27, "SKB", 1000);
+    // System.out.println(m.get_active_customers(3));
     // m.buy(27, "SMD", 3);
     // m.sell(27, "SMD", 3);
     // m.withdraw(28, 2000);

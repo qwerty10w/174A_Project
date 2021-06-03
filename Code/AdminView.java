@@ -55,7 +55,7 @@ public class AdminView extends JFrame {
 		gmsButton.setBounds(20, 20, 300, 50);
 		gmsTextField = new JTextField();
 		gmsTextField.setBounds(350, 20, 300, 50);
-		gmsLabel = new JLabel("Tax ID");
+		gmsLabel = new JLabel("Username");
 		gmsLabel.setBounds(475, 50, 200, 50);
 		gmsLabel.setDisplayedMnemonic(KeyEvent.VK_P);
 
@@ -63,7 +63,7 @@ public class AdminView extends JFrame {
 		crButton.setBounds(20, 90, 300, 50);
 		crTextField = new JTextField();
 		crTextField.setBounds(350, 90, 300, 50);
-		crLabel = new JLabel("Tax ID");
+		crLabel = new JLabel("Username");
 		crLabel.setBounds(475, 120, 200, 50);
 		crLabel.setDisplayedMnemonic(KeyEvent.VK_P);
 
@@ -193,7 +193,8 @@ public class AdminView extends JFrame {
 			}
 			else if (event.getSource() == generateDTER){
 				try{
-					textArea.append(mn.generate_DTER());
+					// need to add month 
+					textArea.append(mn.get_DTER());
 				}
 				catch(Exception e){
 						e.printStackTrace();
@@ -209,7 +210,7 @@ public class AdminView extends JFrame {
 			}
 			else if (event.getSource() == deleteTransactions){
 				try{
-					mn.delete_transactions();
+					mn.wipe_transactions();
 					textArea.append("List of transactions from each of the accounts was deleted \n");
 				}
 				catch(Exception e){
@@ -264,7 +265,7 @@ public class AdminView extends JFrame {
 			}
 			else if(event.getSource() == reset){
 				try{
-					mn.insert_data();
+					mn.reset_data();
 					textArea.append("Tables are restored to original state \n");
 				}
 				catch(Exception e){

@@ -188,8 +188,15 @@ public class GUI extends JFrame {
                     if(cs.check_market_open()){
                         String strAmount = depositField.getText();
                         double amount = Double.parseDouble(strAmount);
-                        cs.deposit(amount);
-                        infoArea.append(strAmount + " was desposited into your Market Account.\n");
+                        if(strAmount != null || !strAmount.isEmpty()){
+                        	System.out.println("Entered Here 1");
+	                        boolean valid_deposit= cs.deposit(amount);
+	                        if(valid_deposit){
+	                        	infoArea.append(strAmount + " was desposited into your Market Account.\n");
+	                        }else{
+	                        	infoArea.append("Invalid Transaction, Deeposit Failed\n");
+	                        }
+                      } 
                     }
                     else{
                         infoArea.append("The Market is closed.\n");
@@ -208,11 +215,19 @@ public class GUI extends JFrame {
                     String strAmount = withdrawField.getText();
                     double amount = Double.parseDouble(strAmount);
                     double balance = 0;
-                    balance = cs.get_market_balance();
-                    if(balance >= amount){
-                        cs.withdraw(amount);
-                        infoArea.append(strAmount + " was withdrawn from your Market Account.\n");
-                    }
+                    if(strAmount != null || !strAmount.isEmpty()){
+                    	System.out.println("Entered Here 2");
+	                    balance = cs.get_market_balance();
+	                    if(balance >= amount){
+	                        boolean valid_withdraw = cs.withdraw(amount);
+	                        if(valid_withdraw){
+	                        	infoArea.append(strAmount + " was withdrawn from your Market Account.\n");
+	                        }else{
+	                        	infoArea.append("Invalid Transaction, Withdraw Failed\n");
+	                        }
+	              
+	                    }
+                   }
                     else{
                         infoArea.append("You do not have enough money in your Market Account to withdraw " + strAmount + ".\n");
                     }
@@ -233,25 +248,23 @@ public class GUI extends JFrame {
                 String strAmount = buyField2.getText();
                 int amount = Integer.parseInt(strAmount);
                 double price = 0; double balance = 0;
-                // if(db.checkStockExists(strStockID)){
-                 price = cs.get_stock_price(strStockID);
-                 balance = cs.get_market_balance();
-                 if(balance >= ((price * amount) + 20.0)){
-                  cs.withdraw(((price * amount) + 20.0));
-                  boolean valid_buy = cs.buy(strStockID,amount);
-                  if(valid_buy){
-                  	infoArea.append(amount + " shares of " + strStockID + " were purchased.\n");
-                  }else{
-                  	infoArea.append("Invalid Transaction, Purchase Failed\n");
-                  }
+                if(strAmount != null || !strAmount.isEmpty()){
+                	 System.out.println("Entered Here 3");
+	                 price = cs.get_stock_price(strStockID);
+	                 balance = cs.get_market_balance();
+	                 if(balance >= ((price * amount) + 20.0)){
+	                  cs.withdraw(((price * amount) + 20.0));
+	                  boolean valid_buy = cs.buy(strStockID,amount);
+	                  if(valid_buy){
+	                  	infoArea.append(amount + " shares of " + strStockID + " were purchased.\n");
+	                  }else{
+	                  	infoArea.append("Invalid Transaction, Purchase Failed\n");
+	                  }
+	              	}
               }
               else{
                   infoArea.append("You do not have enough money in your Market Account to buy " + amount + " shares of " + strStockID + "\n");
               }
-          // }
-        //   else{
-        //     infoArea.append(strStockID + " is not a valid stock ID.\n");
-        // }
     }
     else {
         infoArea.append("The Market is closed.\n");
@@ -276,9 +289,19 @@ else if (event.getSource() == sell){
          price = cs.get_stock_price(strStockID);
          shares = cs.get_num_shares(strStockID);
          if(shares >= amount){
-          cs.deposit(((price * amount) - 20));
-          cs.sell(strStockID,amount);
-          infoArea.append(amount + " shares of " + strStockID + " were sold.\n");
+          boolean valid_deposit = cs.deposit(((price * amount) - 20));
+          if(valid_deposit){
+              infoArea.append(strAmount + " was desposited into your Market Account.\n");
+          }else{
+              infoArea.append("Invalid Transaction, Deeposit Failed\n");
+          }
+          boolean valid_sell = cs.sell(strStockID,amount);
+          if(valid_sell){
+          	infoArea.append(amount + " shares of " + strStockID + " were sold.\n");
+          }else{
+          	infoArea.append("Invalid Transaction, Sale Failed\n");
+          }
+          
       }
       else{
           infoArea.append("You do not have enough shares in your stock account to sell " + amount + " shares of " + strStockID + "\n");
@@ -305,7 +328,7 @@ else if (event.getSource() == topMovies){
 
    String result = "";
    try{
-    result = cs.top_movies(intStartDate, intEndDate);
+    result = cs.get_top_movies(intStartDate, intEndDate);
     infoArea.append(result);
 }
 catch(Exception e){

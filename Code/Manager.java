@@ -1,4 +1,4 @@
-package net.project;
+// package net.project;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -1041,42 +1041,47 @@ public class Manager{
      return "monthly Statement";
   }
   public void add_interest() {
+    //For all market accounts, add the appropriate amount of monthly interest to the balance. This is usually
+    // done at the end of a month.
     return;
   }
   public String generate_DTER(){
+    // Generate a list of all customers who have made more than $10,000 in the last month,
+    // including earnings from buying/selling stocks and interest. The residence state of each customer should
+    // also be listed.
    return "generate_DTER";
   }
 
   public String active_customers() {
-   return "generate_DTER";
-  }
-  public void delete_transactions()  {
-   return;
+   return "active_customers";
   }
   public void set_date(String date) {
     return;
    }
   public void change_stock_price(double newPrice, String stockID) {
+    System.out.println("In change_stock_price newPrice: " + " newPrice " + " stockID " + stockID);
     return;
   }
   public void toggle_market(Boolean open) {
+    if(this.open == true){
+      close_market();
+    }
+    // need to create function for opening market
    return;
   }
-  public void insert_data() {
+  public void reset_data() {
+    // basically reset the data 
    return;
   }
 
   public static void main(String[] args){
     Manager m = new Manager();
-    System.out.println(m.customer_report("alfred"));
-    // m.deposit(28, 100000);
-    // m.buy(27, "SKB", 1000);
-    // m.sell(27, "SKB", 1000);
-    // System.out.println(m.get_active_customers(3));
-    // m.buy(27, "SMD", 3);
-    // m.sell(27, "SMD", 3);
-    // m.withdraw(28, 2000);
-    // m.close_market();
-    // System.out.println(m.get_monthly_statement("test2"));
+    m.buy(27, "SMD", 3);
+    m.buy(27, "SKB", 2);
+    m.sell(27, "SMD", 3);
+    m.deposit(28, 3000);
+    m.withdraw(28, 2000);
+    m.close_market();
+    System.out.println(m.get_monthly_statement("test2"));
   }
 }

@@ -40,6 +40,8 @@ public class Customer{
     }
   }
 
+
+  //LOGISTICAL FUNCTIONS----------------------------------------------------------------------------
   public String get_date(){
     String query = "SELECT * FROM Calendar";
     String date = "FAILED";
@@ -56,7 +58,7 @@ public class Customer{
     return date;
   }
 
- public boolean login_admin(String username, String password){
+  public boolean login_admin(String username, String password){
     System.out.println("In login_admin in Customer class username: " + username + " password: " + password);
     return true;
   }
@@ -78,6 +80,7 @@ public class Customer{
         String pw = rs.getString("password");
         if(password.equals(pw)){
           rs.close();
+          this.username = username;
           PreparedStatement ps2 = this.conn.prepareStatement(query2);
           ps2.setString(1, username);
           ResultSet rs2 = ps2.executeQuery();
@@ -99,11 +102,12 @@ public class Customer{
     }catch (SQLException e){
       System.out.println(e.getMessage());
     }
+    System.out.println("Sucessfully logged in as: " + this.username + ". \nMA: " + String.valueOf(this.market_id) + "\nSA: " + String.valueOf(this.stock_id));
     return success;
   }
 
-  public int signup(String name, String addy, String state, String pnumber, String email, String username, String password, double init_deposit){
-    System.out.println("In login in Customer class name: " + name + " addy: " + addy + " state: " + state+ " pnumber: " + pnumber+
+  public boolean signup(String name, String addy, String state, String pnumber, String email, String username, String password, double init_deposit){
+    System.out.println("In login in Customer class name: " + name + " addy: " + addy + " state: " + state+ " pnumber: " + pnumber +
       " email: " + email + " username: " + username + " password: " + password + " init_deposit: " + init_deposit);
     String query = "SELECT * FROM Customers WHERE username = ?";
     String query2 = "SELECT ID, type from Accounts WHERE user = ?";
@@ -111,7 +115,7 @@ public class Customer{
     int tax_ID = random.nextInt(9000) + 1000;
     if(init_deposit < 1000){
       System.out.println("Initial deposit must be >= $1000");
-      return 0;
+      return false;
     }
 
     try{
@@ -141,8 +145,7 @@ public class Customer{
     }catch (SQLException e){
       System.out.println(e.getMessage());
     }
-    return tax_ID;
-    // return success;
+    return success;
   }
 
   public void insert_customer(String name, String addy, String state, String pnumber, String email, String username, String password, int tax_id){
@@ -160,7 +163,9 @@ public class Customer{
     }
   }
 
-
+  public boolean check_market_open(){
+    return true;
+  }
 
 
   //MARKET ACCOUNT FUNCTIONS ----------------------------------------------------------------------
@@ -444,6 +449,27 @@ public class Customer{
       System.out.println(e.getMessage());
     }
     return balance;
+  }
+
+  public int get_num_shares(String symbol){
+    String query = "SELECT amount FROM Owns WHERE ID = ? AND symbol = ?";
+    int result = 0;
+    try{
+      PreparedStatement ps = this.conn.prepareStatement(query);
+      ps.setInt(1, this.stock_id);
+      ps.setString(2, symbol);
+      ResultSet rs = ps.executeQuery();
+      if(!rs.next()){
+        result = 0;
+      }else{
+        result = rs.getInt("amount");
+      }
+      rs.close();
+      ps.close();
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+    return result;
   }
 
   public double get_stock_price(String symbol){

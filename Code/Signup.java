@@ -1,4 +1,5 @@
-// package net.project;
+package net.project;
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -48,18 +49,16 @@ public class Signup extends JFrame {
 	// JPanel eight;
 
 	// Dataloader dl;
-	// Manager mn; 
+	// Manager mn;
 	Customer cs;
-	int id;
 
 	// public Signup(String username, String password, Dataloader mydb, int myid) {
-	public Signup(String username, String password, Customer mydb, int myid) {
+	public Signup(String username, String password, Customer mydb) {
 		frame = new JFrame("Sign Up Information");
 		content = frame.getContentPane();
 		cs = mydb;
 		// mn = mydb
 		// dl = mydb;
-		id = myid;
 
 		done = new JButton("Sign Up");
 
@@ -190,6 +189,7 @@ public class Signup extends JFrame {
 		public void actionPerformed(ActionEvent event) {
 			if (event.getSource() == done){
 				int tax_ID = 0;
+				boolean success = false;
 				String username = userField.getText();
 				String password = passField.getText();
 				String name = nameTextField.getText();
@@ -204,9 +204,9 @@ public class Signup extends JFrame {
     			//call andrews signup function
 				userField.setText("made it");
 				try{
-					tax_ID = cs.signup(name, username, password, address, state, phoneNum, email, deposit);
+					success = cs.signup(name, username, password, address, state, phoneNum, email, deposit);
 					// some sort of bug causing newCustomer to crash
-					if(tax_ID != 0){
+					if(success){
 						nameTextField.setText("about to switch");
 						// GUI gui = new GUI(db, tax_ID);
 						// gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -220,7 +220,7 @@ public class Signup extends JFrame {
 					e.printStackTrace();
 				}
 
-				
+
 
 			}
 		}

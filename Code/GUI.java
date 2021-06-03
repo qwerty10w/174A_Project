@@ -1,4 +1,5 @@
-// package net.project;
+package net.project;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
@@ -18,48 +19,47 @@ public class GUI extends JFrame {
 	private JButton movieInfo;
 	private JButton topMovies;
 	private JButton movieReviews;
-    private JButton clear;
-    private JButton logout;
+  private JButton clear;
+  private JButton logout;
 
-    private JTextField depositField;
-    private JTextField withdrawlField;
-    private JTextField buyField1;
-    private JTextField buyField2;
-    private JTextField sellField1;
-    private JTextField sellField2;
-    private JTextField origPrice;
-    private JLabel origPriceLabel;
-    private JTextField startDate;
-    private JTextField endDate;
-    private JTextField actorProfile;
-    private JTextField movieInfoField;
-    private JTextField movieReviewsField;
-    private JTextArea infoArea;
+  private JTextField depositField;
+  private JTextField withdrawlField;
+  private JTextField buyField1;
+  private JTextField buyField2;
+  private JTextField sellField1;
+  private JTextField sellField2;
+  private JTextField origPrice;
+  private JLabel origPriceLabel;
+  private JTextField startDate;
+  private JTextField endDate;
+  private JTextField actorProfile;
+  private JTextField movieInfoField;
+  private JTextField movieReviewsField;
+  private JTextArea infoArea;
 
-    private JLabel buyStock;
-    private JLabel buyAmt;
-    private JLabel sellStock;
-    private JLabel sellAmt;
-    private JLabel startDateLabel;
-    private JLabel endDateLabel;
-    private JLabel actorProfileLabel;
-    private JLabel movieInfoLabel;
-    private JLabel movieReviewsLabel;
+  private JLabel buyStock;
+  private JLabel buyAmt;
+  private JLabel sellStock;
+  private JLabel sellAmt;
+  private JLabel startDateLabel;
+  private JLabel endDateLabel;
+  private JLabel actorProfileLabel;
+  private JLabel movieInfoLabel;
+  private JLabel movieReviewsLabel;
 
-    JScrollPane scroller;
-    // Manager mn;
-    Customer cs;
-    // Dataloader dl;
-    int id;
+  JScrollPane scroller;
+  // Manager mn;
+  Customer cs;
+  // Dataloader dl;
+  int id;
 
-    // public GUI(Dataloader mydb, int myid) {
-    public GUI(Customer mydb, int myid) {
+  // public GUI(Dataloader mydb, int myid) {
+  public GUI(Customer mydb) {
 	super("Trader Interface"); // superclass constructor sets the title
 	setLayout(null);
-    cs = mydb;
+  cs = mydb;
     // mn = mydb;
 	// dl = mydb;
-	id = myid;
 
 	FontUIResource fbold = new FontUIResource(Font.SANS_SERIF,Font.BOLD,14);
 	FontUIResource fplain = new FontUIResource(Font.SANS_SERIF,Font.PLAIN,16);
@@ -98,13 +98,13 @@ public class GUI extends JFrame {
 	sellField2.setBounds(560,70,50,30);
 	sellAmt = new JLabel("Amount",JLabel.LEFT);
 	sellAmt.setBounds(560,100,150,20);
-    origPrice = new JTextField();
-    origPrice.setBounds(610, 70, 50, 30);
-    origPriceLabel = new JLabel("Price");
-    origPriceLabel.setBounds(620, 100, 150, 20);
+  origPrice = new JTextField();
+  origPrice.setBounds(610, 70, 50, 30);
+  origPriceLabel = new JLabel("Price");
+  origPriceLabel.setBounds(620, 100, 150, 20);
 
-    topMovies = new JButton("Top Movies");
-    topMovies.setBounds(20,130,150,40);
+  topMovies = new JButton("Top Movies");
+  topMovies.setBounds(20,130,150,40);
 	startDate = new JTextField("",10); // 10 wide, and initially empty
 	startDate.setBounds(180,130,75,30);
 	startDateLabel = new JLabel("Start",JLabel.LEFT);
@@ -142,26 +142,26 @@ public class GUI extends JFrame {
 	showBalance = new JButton("Show Balance");
 	showBalance.setBounds(420,250,200,40);
 
-    clear = new JButton("Clear");
-    clear.setBounds(565, 300, 100, 30);
+  clear = new JButton("Clear");
+  clear.setBounds(565, 300, 100, 30);
 
-    logout = new JButton("Logout");
-    logout.setBounds(20, 300, 100, 30);
+  logout = new JButton("Logout");
+  logout.setBounds(20, 300, 100, 30);
 
-    infoArea = new JTextArea();
-    infoArea.setLineWrap(true);
-    infoArea.setEditable(false);
-    scroller = new JScrollPane(infoArea);
-    scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-    scroller.setBounds(20,325,640,440);
+  infoArea = new JTextArea();
+  infoArea.setLineWrap(true);
+  infoArea.setEditable(false);
+  scroller = new JScrollPane(infoArea);
+  scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+  scroller.setBounds(20,325,640,440);
 
 	// add everything to the panel
-    add(deposit);add(withdrawl);add(buy);add(sell);
-    add(depositField);add(withdrawlField);add(buyField1); add(buyField2); add(sellField1); add(sellField2);
-    add(buyStock);add(buyAmt);add(sellStock);add(sellAmt); add(topMovies); add(startDate); add(endDate);
-    add(startDateLabel); add(endDateLabel); add(viewActorProfile); add(actorProfile); add(actorProfileLabel);
-    add(movieInfo); add(movieInfoField); add(movieInfoLabel); add(movieReviews); add(movieReviewsField); add(movieReviewsLabel);
-    add(transactionHistory); add(showBalance); add(scroller); add(origPrice); add(origPriceLabel); add(clear); add(logout);
+  add(deposit);add(withdrawl);add(buy);add(sell);
+  add(depositField);add(withdrawlField);add(buyField1); add(buyField2); add(sellField1); add(sellField2);
+  add(buyStock);add(buyAmt);add(sellStock);add(sellAmt); add(topMovies); add(startDate); add(endDate);
+  add(startDateLabel); add(endDateLabel); add(viewActorProfile); add(actorProfile); add(actorProfileLabel);
+  add(movieInfo); add(movieInfoField); add(movieInfoLabel); add(movieReviews); add(movieReviewsField); add(movieReviewsLabel);
+  add(transactionHistory); add(showBalance); add(scroller); add(origPrice); add(origPriceLabel); add(clear); add(logout);
 
 	// The only thing we want to wait for is a click on the button
     MyHandler handler = new MyHandler();
@@ -184,9 +184,9 @@ public class GUI extends JFrame {
     	public void actionPerformed(ActionEvent event) {
     		//DEPOSIT
     		if (event.getSource() == deposit){
-    			
+
     			try{
-                    if(cs.checkMarketOpen()){
+                    if(cs.check_market_open()){
                         String strAmount = depositField.getText();
                         double amount = Double.parseDouble(strAmount);
                         cs.deposit(amount);
@@ -205,7 +205,7 @@ public class GUI extends JFrame {
             else if (event.getSource() == withdrawl){
 
                try{
-                if(cs.checkMarketOpen()){
+                if(cs.check_market_open()){
                     String strAmount = withdrawlField.getText();
                     double amount = Double.parseDouble(strAmount);
                     double balance = 0;
@@ -229,7 +229,7 @@ public class GUI extends JFrame {
     		//BUY
         else if (event.getSource() == buy){
            try{
-            if(cs.checkMarketOpen()){
+            if(cs.check_market_open()){
                 String strStockID = buyField1.getText();
                 String strAmount = buyField2.getText();
                 int amount = Integer.parseInt(strAmount);
@@ -241,7 +241,7 @@ public class GUI extends JFrame {
                   cs.withdraw(((price * amount) + 20.0));
                   cs.buy(strStockID,amount);
                   // cs.addStock(strStockID, amount, id, price);
-                  infoArea.append(amount + " shares of " + strStockID + " were purchased.\n");	
+                  infoArea.append(amount + " shares of " + strStockID + " were purchased.\n");
               }
               else{
                   infoArea.append("You do not have enough money in your Market Account to buy " + amount + " shares of " + strStockID + "\n");
@@ -257,8 +257,8 @@ public class GUI extends JFrame {
 }
 catch (Exception e){
     e.printStackTrace();
-}	
-}		
+}
+}
     		//SELL
 else if (event.getSource() == sell){
        String strStockID = sellField1.getText();
@@ -268,15 +268,15 @@ else if (event.getSource() == sell){
        int amount = Integer.parseInt(strAmount);
        double price = 0; double shares = 0;
        try{
-        if(cs.checkMarketOpen()){
+        if(cs.check_market_open()){
         // if(db.checkStockExists(strStockID)){
          price = cs.get_stock_price(strStockID);
-         shares = cs.getNumShares(strStockID);
+         shares = cs.get_num_shares(strStockID);
          if(shares >= amount){
           cs.deposit(((price * amount) - 20));
           cs.sell(strStockID,amount);
           // db.sellStock(strStockID, amount, id, price, doubleOrigPrice);
-          infoArea.append(amount + " shares of " + strStockID + " were sold.\n");	
+          infoArea.append(amount + " shares of " + strStockID + " were sold.\n");
       }
       else{
           infoArea.append("You do not have enough shares in your stock account to sell " + amount + " shares of " + strStockID + "\n");
@@ -292,7 +292,7 @@ else{
 }
 catch (Exception e){
     e.printStackTrace();
-}			
+}
 }
 //     		//TOP MOVIES
 // else if (event.getSource() == topMovies){

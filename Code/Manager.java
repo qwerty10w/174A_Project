@@ -1,4 +1,4 @@
-// package net.project;
+package net.project;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -138,8 +138,125 @@ public class Manager{
     System.out.println("Attributes passed username: " + username + "password: " + password);
   }
 
+  public void get_monthly_statement(String username){
+    String get_accounts = "SELECT ID, type FROM Accounts WHERE user = ?";
+    String get_market_transactions = "SELECT * FROM Market_Transactions WHERE ID = ?";
+    String get_stock_transactions = "SELECT * FROM Stock_Transactions WHERE ID = ?";
 
+    int market_id = -1;
+    int stock_id = -1;
+    double initial_market_balance = -1;
+    double final_market_balance = -1;
+    try{
+      //Get account id's
+      PreparedStatement ps = this.conn.prepareStatement(get_accounts);
+      ps.setString(1, username);
+      ResultSet rs = ps.executeQuery();
+      while(rs.next()){
+        int type = rs.getInt("type");
+        int acc_id = rs.getInt("ID");
 
+        if(type == 0){
+          market_id = acc_id;
+        }else if(type == 1){
+          stock_id = acc_id;
+        }
+      }
+      rs.close();
+      ps.close();
+
+      initial_market_balance = this.get_initial_market_balance(market_id, this.year, this.month);
+      final_market_balance = this.get_final_market_balance(market_id, this.year, this.month);
+
+      PreparedStatement ps2 = this.conn.prepareStatement(get_market_transactions);
+      ps2.setInt(1, market_id);
+      ResultSet market_actions = ps2.executeQuery();
+      //display transactions on screen
+      market_actions.close();
+      ps2.close();
+
+      if(stock_id != -1){
+        PreparedStatement ps3 = this.conn.prepareStatement(get_stock_transactions);
+        ps3.setInt(1, market_id);
+        ResultSet stock_actions = ps3.executeQuery();
+        //display transactions on screen
+        stock_actions.close();
+        ps3.close();
+
+        double total_earnings = this.get_total_earnings(stock_id, this.year, this.month);
+        if(total_earnings != -1){
+          System.out.println("congrats you made some money");
+          //display earnings on screen
+        }
+      }
+
+      if((initial_market_balance != -1) && (final_market_balance != -1)){
+        double market_diff = final_market_balance - initial_market_balance;
+        //display diff on screen
+      }
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+  }
+
+  public double get_initial_market_balance(int acc_id, int year, int month){
+    String get_initial_market_balance = "SELECT balance FROM Daily_Market_Balance WHERE ID = ? AND date LIKE ? ORDER BY date LIMIT 1";
+    double balance = -1;
+    try{
+      String like_string = "\"" + String.valueOf(year) + "-" + String.valueOf(month) + "%\"";
+      PreparedStatement ps = this.conn.prepareStatement("get_initial_market_balance");
+      ps.setInt(1, acc_id);
+      ps.setString(2, like_string);
+      ResultSet rs = ps.executeQuery();
+      if(rs.next()){
+        balance = rs.getDouble("balance");
+      }
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+    return balance;
+  }
+
+  public double get_final_market_balance(int acc_id, int year, int month){
+    String get_initial_market_balance = "SELECT balance FROM Daily_Market_Balance WHERE ID = ? AND date LIKE ? ORDER BY date DESC LIMIT 1";
+    double balance = -1;
+    try{
+      String like_string = "\"" + String.valueOf(year) + "-" + String.valueOf(month) + "%\"";
+      PreparedStatement ps = this.conn.prepareStatement("get_initial_market_balance");
+      ps.setInt(1, acc_id);
+      ps.setString(2, like_string);
+      ResultSet rs = ps.executeQuery();
+      if(rs.next()){
+        balance = rs.getDouble("balance");
+      }
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+    return balance;
+  }
+
+  public double get_total_earnings(int acc_id, int year, int month){
+    //query
+    String get_total_earnings = "SELECT SUM(EARNINGS) AS total FROM (\n"
+                                  + "SELECT ID, earnings FROM Stock_Transactions \n"
+                                  + "WHERE date LIKE ?) AS t \n"
+                                  + "WHERE t.ID = ? \n"
+                                  + "GROUP BY t.ID";
+    double earnings = -1;
+    try{
+      String like_string = "\"" + String.valueOf(year) + "-" + String.valueOf(month) + "%\"";
+      PreparedStatement ps = this.conn.prepareStatement("get_total_earnings");
+      ps.setInt(1, acc_id);
+      ps.setString(2, like_string);
+      ResultSet rs = ps.executeQuery();
+      if(rs.next()){
+        earnings = rs.getDouble("balance");
+      }
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+    return earnings;
+  }
 
   //STOCK AND MARKET ACCOUNT FUNCTIONS --------------------------------------------------
   public double get_balance(int acc_id){
@@ -218,7 +335,7 @@ public class Manager{
     String query = "SELECT AVG(balance) AS avg FROM (\n"
         + "SELECT ID, balance FROM Daily_Market_Balance \n"
         + "WHERE date LIKE ?) AS t \n"
-        + "WHERE t.ID = ?"
+        + "WHERE t.ID = ? \n"
         + "GROUP BY t.ID";
 
     double avg_balance = -1;
@@ -298,8 +415,13 @@ public class Manager{
     }
   }
 
-  public void set_new_price(String symbol, double price){
+  public boolean set_new_price(String symbol, double price){
     String query = "UPDATE Actors SET price = ? WHERE symbol = ?";
+    if(price < 0){
+      System.out.println("Price must be greater than $0!");
+      return false;
+    }
+
     try{
       PreparedStatement ps = this.conn.prepareStatement(query);
       ps.setDouble(1, price);
@@ -309,6 +431,7 @@ public class Manager{
     }catch (SQLException e){
       System.out.println(e.getMessage());
     }
+    return true;
   }
 
 

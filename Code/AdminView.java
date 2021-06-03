@@ -1,4 +1,5 @@
-// package net.project;
+package net.project;
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -7,7 +8,6 @@ import javax.swing.plaf.FontUIResource;
 public class AdminView extends JFrame {
 	// Dataloader dl;
 	Customer cs;
-	int id;
 
 	JButton gmsButton;
 	JTextField gmsTextField;
@@ -40,12 +40,11 @@ public class AdminView extends JFrame {
 
 
 
-	public AdminView(Customer mydb, int myid){
+	public AdminView(Customer mydb){
 		super("Admin");
 		setLayout(null);
 
 		cs = mydb;
-		id = myid;
 
 		FontUIResource fbold = new FontUIResource(Font.SANS_SERIF,Font.BOLD,14);
 		FontUIResource fplain = new FontUIResource(Font.SANS_SERIF,Font.PLAIN,16);
@@ -93,7 +92,7 @@ public class AdminView extends JFrame {
 		updateStockPrice.setBounds(20, 370, 300, 50);
 		updateStockPriceField = new JTextField();
 		updateStockPriceField.setBounds(350, 370, 150, 50);
-		
+
 		updateStockField = new JTextField();
 		updateStockField.setBounds(350, 370, 150, 50);
 		updateStockPriceField = new JTextField();
@@ -127,7 +126,7 @@ public class AdminView extends JFrame {
 		add(gmsButton); add(gmsTextField); add(gmsLabel); add(crButton);
 		add(crTextField); add(crLabel); add(addInterest);
 		add(generateDTER); add(listActiveCustomers); add(deleteTransactions); add(setDate);
-		add(dateTextField); add(dateLabel); add(scroller); add(updateStockPrice); 
+		add(dateTextField); add(dateLabel); add(scroller); add(updateStockPrice);
 		add(updateStockPriceLabel);add(updateStockPriceField); add(updateStockField); add(updateStockLabel);
 		add(clear); add(openMarket); add(closeMarket); add(reset); add(logout);
 
@@ -272,7 +271,7 @@ public class AdminView extends JFrame {
 				catch(Exception e){
 					e.printStackTrace();
 				}
-				
+
 			}
 			else if(event.getSource() == logout){
 				Launcher mjf = new Launcher();

@@ -1,4 +1,5 @@
-// package net.project;
+package net.project;
+
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.KeyEvent;
@@ -22,10 +23,10 @@ public class Launcher extends JFrame {
 	JCheckBox signUp;
 	JPanel boxPanel;
 	JPanel checkIt;
-	
+
 	// Dataloader dl;
 	// Manager mn;
-	Customer cs; 
+	Customer cs;
 	public Launcher(){
 		cs = new Customer();
 		// dl = new Dataloader();
@@ -37,7 +38,7 @@ public class Launcher extends JFrame {
 		// catch( Exception e){
 		// 	e.printStackTrace();
 		// }
-		
+
 
 		String title = "Login";
 		frame = new JFrame(title);
@@ -97,7 +98,7 @@ public class Launcher extends JFrame {
     // inner class
     private class MyHandler implements ActionListener {
     	public void actionPerformed(ActionEvent event) {
-    		int id = 1;
+    		boolean login_success = false;
     		if (event.getSource() == button){
 
     			String name = userTextField.getText();
@@ -108,16 +109,16 @@ public class Launcher extends JFrame {
     				try{
     					// id = dl.loginAdmin(name, password);
     					// id = mn.create_admin(name,password);
-    					boolean adminCreated = cs.login_admin(name,password);
+    					login_success = cs.login_admin(name,password);
     				}
     				catch (Exception e){
     					e.printStackTrace();
     				}
-    				
-    				if(id != 0){
+
+    				if(login_success){
     					//call new Admin gui
     					// AdminView ad = new AdminView(dl, id);
-    					AdminView ad = new AdminView(cs, id);
+    					AdminView ad = new AdminView(cs);
     					ad.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     					ad.setSize(1400,800);
     					ad.setVisible(true);
@@ -125,29 +126,29 @@ public class Launcher extends JFrame {
     					frame.dispose();
     				}
 
-    			
+
     			}
     			else if (signUp.isSelected()){
     				//call db signup function with username and password
     				// Signup su = new Signup(name, password, dl, id);
-    				Signup su = new Signup(name, password, cs, id);
+    				Signup su = new Signup(name, password, cs);
     				frame.dispose();
     			}
     			else{
     				//proceed as normal to login user who already has an account
-    				
+
     				try{
     					// id = dl.login(name, password);
     					// id = mn.login(name, password);
-    					boolean customerCreated = cs.login(name, password);
+    					login_success = cs.login(name, password);
     				}
     				catch (Exception e){
     					e.printStackTrace();
     				}
 
-    				if(id != 0){
+    				if(login_success){
     					// GUI gui = new GUI(dl, id);
-    					GUI gui = new GUI(cs, id);
+    					GUI gui = new GUI(cs);
     					gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     					gui.setSize(700,800);
     					gui.setVisible(true);

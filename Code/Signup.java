@@ -1,5 +1,4 @@
-package net.project;
-
+// package net.project;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -49,7 +48,7 @@ public class Signup extends JFrame {
 	// JPanel eight;
 
 	// Dataloader dl;
-	// Manager mn;
+	// Manager mn; 
 	Customer cs;
 	int id;
 
@@ -221,7 +220,7 @@ public class Signup extends JFrame {
 					e.printStackTrace();
 				}
 
-
+				
 
 			}
 		}

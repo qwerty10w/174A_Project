@@ -1,5 +1,4 @@
-package net.project;
-
+// package net.project;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
@@ -183,117 +182,118 @@ public class GUI extends JFrame {
     // inner class
     private class MyHandler implements ActionListener {
     	public void actionPerformed(ActionEvent event) {
-//     		//DEPOSIT
-//     		if (event.getSource() == deposit){
+    		//DEPOSIT
+    		if (event.getSource() == deposit){
+    			
+    			try{
+                    if(cs.checkMarketOpen()){
+                        String strAmount = depositField.getText();
+                        double amount = Double.parseDouble(strAmount);
+                        cs.deposit(amount);
+                        infoArea.append(strAmount + " was desposited into your Market Account.\n");
+                    }
+                    else{
+                        infoArea.append("The Market is closed.\n");
+                    }
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
 
-//     			try{
-//                     if(db.checkMarketOpen()){
-//                         String strAmount = depositField.getText();
-//                         int amount = Integer.parseInt(strAmount);
-//                         db.deposit(amount,id,false);
-//                         infoArea.append(strAmount + " was desposited into your Market Account.\n");
-//                     }
-//                     else{
-//                         infoArea.append("The Market is closed.\n");
-//                     }
-//                 }
-//                 catch (Exception e){
-//                     e.printStackTrace();
-//                 }
+            }
+    		//WITHDRAW
+            else if (event.getSource() == withdrawl){
 
-//             }
-//     		//WITHDRAW
-//             else if (event.getSource() == withdrawl){
-
-//                try{
-//                 if(db.checkMarketOpen()){
-//                     String strAmount = withdrawlField.getText();
-//                     int amount = Integer.parseInt(strAmount);
-//                     double balance = 0;
-//                     balance = db.getMarketBalance(id);
-//                     if(balance >= amount){
-//                         db.withdraw(amount,id,false);
-//                         infoArea.append(strAmount + " was withdrawn from your Market Account.\n");
-//                     }
-//                     else{
-//                         infoArea.append("You do not have enough money in your Market Account to withdraw " + strAmount + ".\n");
-//                     }
-//                 }
-//                 else{
-//                     infoArea.append("The Market is closed.\n");
-//                 }
-//             }
-//             catch (Exception e){
-//                 e.printStackTrace();
-//             }
-//         }
-//     		//BUY
-//         else if (event.getSource() == buy){
-//            try{
-//             if(db.checkMarketOpen()){
-//                 String strStockID = buyField1.getText();
-//                 String strAmount = buyField2.getText();
-//                 double amount = Double.parseDouble(strAmount);
-//                 double price = 0; double balance = 0;
-//                 if(db.checkStockExists(strStockID)){
-//                  price = db.getCurrentStockPrice(strStockID);
-//                  balance = db.getMarketBalance(id);
-//                  if(balance >= ((price * amount) + 20)){
-//                   db.withdraw(((price * amount) + 20),id, true);
-//                   db.addStock(strStockID, amount, id, price);
-//                   infoArea.append(amount + " shares of " + strStockID + " were purchased.\n");
-//               }
-//               else{
-//                   infoArea.append("You do not have enough money in your Market Account to buy " + amount + " shares of " + strStockID + "\n");
-//               }
-//           }
-//           else{
-//             infoArea.append(strStockID + " is not a valid stock ID.\n");
-//         }
-//     }
-//     else {
-//         infoArea.append("The Market is closed.\n");
-//     }
-// }
-// catch (Exception e){
-//     e.printStackTrace();
-// }
-// }
-//     		//SELL
-// else if (event.getSource() == sell){
-
-//        String strStockID = sellField1.getText();
-//        String strAmount = sellField2.getText();
-//        String strOrigPrice = origPrice.getText();
-//        double doubleOrigPrice = Double.parseDouble(strOrigPrice);
-//        double amount = Double.parseDouble(strAmount);
-//        double price = 0; double shares = 0;
-//        try{
-//         if(db.checkMarketOpen()){
-//         if(db.checkStockExists(strStockID)){
-//          price = db.getCurrentStockPrice(strStockID);
-//          shares = db.getNumShares(strStockID, id);
-//          if(shares >= amount){
-//           db.deposit(((price * amount) - 20),id, true);
-//           db.sellStock(strStockID, amount, id, price, doubleOrigPrice);
-//           infoArea.append(amount + " shares of " + strStockID + " were sold.\n");
-//       }
-//       else{
-//           infoArea.append("You do not have enough shares in your stock account to sell " + amount + " shares of " + strStockID + "\n");
-//       }
-//   }
-//   else{
-//      infoArea.append(strStockID + " is not a valid stock ID.\n");
-//  }
-// }
-// else{
-//  infoArea.append("The Market is closed.\n");
-// }
-// }
-// catch (Exception e){
-//     e.printStackTrace();
-// }
-// }
+               try{
+                if(cs.checkMarketOpen()){
+                    String strAmount = withdrawlField.getText();
+                    double amount = Double.parseDouble(strAmount);
+                    double balance = 0;
+                    balance = cs.get_market_balance();
+                    if(balance >= amount){
+                        cs.withdraw(amount);
+                        infoArea.append(strAmount + " was withdrawn from your Market Account.\n");
+                    }
+                    else{
+                        infoArea.append("You do not have enough money in your Market Account to withdraw " + strAmount + ".\n");
+                    }
+                }
+                else{
+                    infoArea.append("The Market is closed.\n");
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    		//BUY
+        else if (event.getSource() == buy){
+           try{
+            if(cs.checkMarketOpen()){
+                String strStockID = buyField1.getText();
+                String strAmount = buyField2.getText();
+                int amount = Integer.parseInt(strAmount);
+                double price = 0; double balance = 0;
+                // if(db.checkStockExists(strStockID)){
+                 price = cs.get_stock_price(strStockID);
+                 balance = cs.get_market_balance();
+                 if(balance >= ((price * amount) + 20.0)){
+                  cs.withdraw(((price * amount) + 20.0));
+                  cs.buy(strStockID,amount);
+                  // cs.addStock(strStockID, amount, id, price);
+                  infoArea.append(amount + " shares of " + strStockID + " were purchased.\n");	
+              }
+              else{
+                  infoArea.append("You do not have enough money in your Market Account to buy " + amount + " shares of " + strStockID + "\n");
+              }
+          // }
+        //   else{
+        //     infoArea.append(strStockID + " is not a valid stock ID.\n");
+        // }
+    }
+    else {
+        infoArea.append("The Market is closed.\n");
+    }
+}
+catch (Exception e){
+    e.printStackTrace();
+}	
+}		
+    		//SELL
+else if (event.getSource() == sell){
+       String strStockID = sellField1.getText();
+       String strAmount = sellField2.getText();
+       String strOrigPrice = origPrice.getText();
+       double doubleOrigPrice = Double.parseDouble(strOrigPrice);
+       int amount = Integer.parseInt(strAmount);
+       double price = 0; double shares = 0;
+       try{
+        if(cs.checkMarketOpen()){
+        // if(db.checkStockExists(strStockID)){
+         price = cs.get_stock_price(strStockID);
+         shares = cs.getNumShares(strStockID);
+         if(shares >= amount){
+          cs.deposit(((price * amount) - 20));
+          cs.sell(strStockID,amount);
+          // db.sellStock(strStockID, amount, id, price, doubleOrigPrice);
+          infoArea.append(amount + " shares of " + strStockID + " were sold.\n");	
+      }
+      else{
+          infoArea.append("You do not have enough shares in your stock account to sell " + amount + " shares of " + strStockID + "\n");
+      }
+  // }
+ //  else{
+ //     infoArea.append(strStockID + " is not a valid stock ID.\n");
+ // }
+}
+else{
+ infoArea.append("The Market is closed.\n");
+}
+}
+catch (Exception e){
+    e.printStackTrace();
+}			
+}
 //     		//TOP MOVIES
 // else if (event.getSource() == topMovies){
 //    String strStartDate = startDate.getText();

@@ -15,6 +15,8 @@ public class AdminView extends JFrame {
 	JTextField crTextField;
 	JLabel crLabel;
 	JButton addInterest;
+	JTextField addInterestTextField;
+	JLabel addInterestLabel;
 	JButton generateDTER;
 	JButton listActiveCustomers;
 	JButton deleteTransactions;
@@ -68,7 +70,13 @@ public class AdminView extends JFrame {
 		crLabel.setDisplayedMnemonic(KeyEvent.VK_P);
 
 		addInterest = new JButton("Add Interest");
-		addInterest.setBounds(20, 160, 300, 50);
+		addInterest.setBounds(20, 160, 150, 50);
+		addInterestTextField = new JTextField();
+		addInterestTextField.setBounds(170, 160, 150, 50);
+		addInterestLabel = new JLabel("Account ID");
+		addInterestLabel.setBounds(200, 190, 150, 50);
+		addInterestLabel.setDisplayedMnemonic(KeyEvent.VK_P);
+
 		generateDTER = new JButton("Generate DTER");
 		generateDTER.setBounds(350, 160, 300, 50);
 
@@ -123,7 +131,7 @@ public class AdminView extends JFrame {
 		scroller.setBounds(700,20,640,700);
 
 		add(gmsButton); add(gmsTextField); add(gmsLabel); add(crButton);
-		add(crTextField); add(crLabel); add(addInterest);
+		add(crTextField); add(crLabel); add(addInterest);add(addInterestTextField);add(addInterestLabel);
 		add(generateDTER); add(listActiveCustomers); add(deleteTransactions); add(setDate);
 		add(dateTextField); add(dateLabel); add(scroller); add(updateStockPrice);
 		add(updateStockPriceLabel);add(updateStockPriceField); add(updateStockField); add(updateStockLabel);
@@ -183,8 +191,9 @@ public class AdminView extends JFrame {
 
 			}
 			else if (event.getSource() == addInterest){
-				try{
-					mn.add_interest();
+				String get_acc_id = addInterestTextField.getText();
+				try{// need to pass in acc_id
+					mn.accrue_interest(Integer.parseInt(get_acc_id));
 					textArea.append("Interest has been added to all accounts \n");
 				}
 				catch(Exception e){
@@ -219,16 +228,20 @@ public class AdminView extends JFrame {
 
 			}
 			else if (event.getSource() == setDate){
-				String aDate = dateTextField.getText();
-				// parse date by - and get mm - dd - yy 
+				String full_date = dateTextField.getText();
+				String[] date_parts = full_date.split("-");
+				String mm = date_parts[0]; 
+				String dd = date_parts[1]; 
+				String yy = date_parts[2];
+				 
 				try{
 					// (int day, int month, int year)
-					mn.set_date(aDate);
+					mn.set_date(Integer.parseInt(dd),Integer.parseInt(mm),Integer.parseInt(yy));
 				}
 				catch(Exception e){
 					e.printStackTrace();
 				}
-				textArea.append("Date is set to " + aDate + "\n");
+				textArea.append("Date is set to " + full_date + "\n");
 			}
 			else if(event.getSource() == clear){
 				textArea.setText("");
@@ -236,10 +249,10 @@ public class AdminView extends JFrame {
 			else if (event.getSource() == updateStockPrice){
 				String stockID = updateStockField.getText();
 				String stockPrice = updateStockPriceField.getText();
-				double intStockPrice = Double.parseDouble(stockPrice);
+				double stock_price = Double.parseDouble(stockPrice);
 				try{
-					mn.change_stock_price(intStockPrice, stockID);
-					textArea.append("Price of " + stockID + " is now " + intStockPrice);
+					mn.set_new_price(stockID,stock_price);
+					textArea.append("Price of " + stockID + " is now " + stock_price);
 				}
 				catch(Exception e){
 					e.printStackTrace();

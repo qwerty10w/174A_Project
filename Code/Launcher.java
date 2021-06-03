@@ -107,7 +107,7 @@ public class Launcher extends JFrame {
     				try{
     					// id = dl.loginAdmin(name, password);
     					// id = mn.create_admin(name,password);
-    					id = cs.create_admin(name,password);
+    					boolean adminCreated = cs.login_admin(name,password);
     				}
     				catch (Exception e){
     					e.printStackTrace();
@@ -138,7 +138,7 @@ public class Launcher extends JFrame {
     				try{
     					// id = dl.login(name, password);
     					// id = mn.login(name, password);
-    					id = cs.login(name, password);
+    					boolean customerCreated = cs.login(name, password);
     				}
     				catch (Exception e){
     					e.printStackTrace();

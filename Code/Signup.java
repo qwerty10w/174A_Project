@@ -3,7 +3,8 @@ import javax.swing.*;
 import java.awt.event.*;
 
 public class Signup extends JFrame {
-
+	// change ssn to taxId
+	// add iniital deposit
 	JFrame frame;
 	Container content;
 	JPanel userPanel;
@@ -28,9 +29,13 @@ public class Signup extends JFrame {
 	JPanel emailPanel;
 	JLabel emailLabel;
 	JTextField emailTextField;
-	JPanel ssnPanel;
-	JLabel ssnLabel;
-	JTextField ssnTextField;
+	JPanel initialDepositPanel;
+	JLabel initialDepositLabel;
+	JTextField initialDepositTextField;
+	// JPanel taxIdPanel;
+	// JLabel taxIdLabel;
+	// JTextField taxIdTextField;
+
 	JButton done;
 	JPanel one;
 	JPanel two;
@@ -39,6 +44,7 @@ public class Signup extends JFrame {
 	JPanel five;
 	JPanel six;
 	JPanel seven;
+	// JPanel eight;
 
 	// Dataloader dl;
 	// Manager mn; 
@@ -114,13 +120,21 @@ public class Signup extends JFrame {
 		emailPanel.add(emailLabel, BorderLayout.WEST);
 		emailPanel.add(emailTextField, BorderLayout.CENTER);
 
-		ssnPanel = new JPanel(new BorderLayout());
-		ssnLabel = new JLabel("SSN: ");
-		ssnLabel.setDisplayedMnemonic(KeyEvent.VK_U);
-		ssnTextField = new JTextField();
-		ssnLabel.setLabelFor(ssnTextField);
-		ssnPanel.add(ssnLabel, BorderLayout.WEST);
-		ssnPanel.add(ssnTextField, BorderLayout.CENTER);
+		initialDepositPanel = new JPanel(new BorderLayout());
+		initialDepositLabel = new JLabel("Initial Deposit: ");
+		initialDepositLabel.setDisplayedMnemonic(KeyEvent.VK_U);
+		initialDepositTextField = new JTextField();
+		initialDepositLabel.setLabelFor(initialDepositTextField );
+		initialDepositPanel.add(initialDepositLabel, BorderLayout.WEST);
+		initialDepositPanel.add(initialDepositTextField, BorderLayout.CENTER);
+
+		// taxIdPanel = new JPanel(new BorderLayout());
+		// taxIdLabel = new JLabel("Initial Deposit: ");
+		// taxIdLabel.setDisplayedMnemonic(KeyEvent.VK_U);
+		// taxIdTextField = new JTextField();
+		// taxIdLabel.setLabelFor(taxIdTextField );
+		// taxIdPanel.add(taxIdLabel, BorderLayout.WEST);
+		// taxIdPanel.add(taxIdTextField, BorderLayout.CENTER);
 
 		one = new JPanel(new BorderLayout());
 		one.add(userPanel, BorderLayout.NORTH);
@@ -140,7 +154,8 @@ public class Signup extends JFrame {
 
 		five = new JPanel(new BorderLayout());
 		five.add(emailPanel, BorderLayout.NORTH);
-		five.add(ssnPanel, BorderLayout.SOUTH);
+		five.add(initialDepositPanel, BorderLayout.SOUTH);
+		// five.add(taxIdPanel, BorderLayout.SOUTH);
 
 		seven = new JPanel(new BorderLayout());
 		seven.add(five, BorderLayout.NORTH);
@@ -149,6 +164,7 @@ public class Signup extends JFrame {
 		six = new JPanel(new BorderLayout());
 		six.add(four, BorderLayout.NORTH);
 		six.add(seven, BorderLayout.SOUTH);
+
 
 
 		mainPanel = new JPanel(new BorderLayout());
@@ -172,7 +188,7 @@ public class Signup extends JFrame {
 	private class MyHandler implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 			if (event.getSource() == done){
-				int tax_ID =0;
+				int tax_ID = 0;
 				String username = userField.getText();
 				String password = passField.getText();
 				String name = nameTextField.getText();
@@ -180,12 +196,14 @@ public class Signup extends JFrame {
 				String state = stateTextField.getText();
 				String phoneNum = phoneNumField.getText();
 				String email = emailTextField.getText();
-				String ssn = ssnTextField.getText();
+				String initialDeposit = initialDepositTextField.getText();
+				double deposit = Double.parseDouble(initialDeposit);
+				// String taxId = taxIdTextField.getText();
 
     			//call andrews signup function
 				userField.setText("made it");
 				try{
-					// tax_ID = db.newCustomer(name, username, password, address, state, phoneNum, email, ssn);
+					tax_ID = cs.signup(name, username, password, address, state, phoneNum, email, deposit);
 					// some sort of bug causing newCustomer to crash
 					if(tax_ID != 0){
 						nameTextField.setText("about to switch");

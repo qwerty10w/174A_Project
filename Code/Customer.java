@@ -1,5 +1,3 @@
-package net.sqlitetutorial;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -13,16 +11,19 @@ import java.io.File;
 import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Customer{
   //Member Vars
+  Random random;
   public Connection conn;
   public String username;
   public int market_id;
   public int stock_id = -1;
 
   public Customer(){
-    this.conn = connect("jdbc:sqlite:E:/sqlite/db/chinook.db");
+    // this.conn = connect("jdbc:sqlite:E:/sqlite/db/chinook.db");
+    random = new Random();
   }
 
   public Connection connect(String url){
@@ -53,7 +54,12 @@ public class Customer{
     return date;
   }
 
+ public boolean login_admin(String username, String password){
+    System.out.println("In login_admin in Customer class username: " + username + " password: " + password);
+    return true;
+  }
   public boolean login(String username, String password){
+    System.out.println("In login in Customer class username: " + username + " password: " + password);
     String query = "SELECT password FROM Customers WHERE username = ?";
     String query2 = "SELECT ID, type from Accounts WHERE user = ?";
     boolean success = true;
@@ -93,14 +99,16 @@ public class Customer{
     return success;
   }
 
-  public boolean signup(String name, String addy, String state, String pnumber, String email, String username, String password, String tax_id, double init_deposit){
+  public int signup(String name, String addy, String state, String pnumber, String email, String username, String password, double init_deposit){
+    System.out.println("In login in Customer class name: " + name + " addy: " + addy + " state: " + state+ " pnumber: " + pnumber+ 
+      " email: " + email + " username: " + username + " password: " + password + " init_deposit: " + init_deposit);
     String query = "SELECT * FROM Customers WHERE username = ?";
     String query2 = "SELECT ID, type from Accounts WHERE user = ?";
     boolean success = true;
-
+    int tax_ID = random.nextInt(9000) + 1000;
     if(init_deposit < 1000){
       System.out.println("Initial deposit must be >= $1000");
-      return false;
+      return 0;
     }
 
     try{
@@ -111,7 +119,7 @@ public class Customer{
         rs.close();
 
         //insert customer
-        this.insert_customer(name, addy, state, pnumber, email, username, password, tax_id);
+        this.insert_customer(name, addy, state, pnumber, email, username, password, tax_ID);
 
         //insert market account with 0 balance
         this.insert_market_account(username, 0);
@@ -130,7 +138,8 @@ public class Customer{
     }catch (SQLException e){
       System.out.println(e.getMessage());
     }
-    return success;
+    return tax_ID;
+    // return success;
   }
 
   public void set_date(int day, int month, int year){
@@ -149,7 +158,7 @@ public class Customer{
     }
   }
 
-  public void insert_customer(String name, String addy, String state, String pnumber, String email, String username, String password, String tax_id){
+  public void insert_customer(String name, String addy, String state, String pnumber, String email, String username, String password, int tax_id){
     String[] args = {name, addy, state, pnumber, email, username, password};
     String query = "INSERT INTO Customers(name, address, state, pnumber, email, username, password, tax_id) VALUES(?,?,?,?,?,?,?,?)";
     try{
@@ -157,7 +166,7 @@ public class Customer{
       for(int i = 1; i < 8; i++){
         ps.setString(i, args[i - 1]);
       }
-      ps.setInt(8, Integer.parseInt(tax_id));
+      // ps.setInt(8, Integer.parseInt(tax_id));
       ps.executeUpdate();
     }catch (SQLException e){
       System.out.println(e.getMessage());
@@ -653,3 +662,4 @@ public class Customer{
     Customer m = new Customer();
   }
 }
+

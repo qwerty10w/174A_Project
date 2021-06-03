@@ -707,23 +707,7 @@ public class Customer{
   // return result;
     return "top movies";
   }
-public Boolean check_stock_exists(String stockID)  {
-  // String query = "select name from Actors where actor_id = '" + stockID + "'";
-  // ResultSet rs = stmt.executeQuery(query);
-  // String actorName = "";
-  // while (rs.next()){
-  //   actorName = rs.getString("name");
-  // }
-  // if(actorName.equals("")){
-  //   rs.close();
-  //   return false;
-  // }
-  // else{
-  //   rs.close();
-  //   return true;
-  // }
-  return true;
-  }
+
 public String get_actor_profile(String stockID)  {
   // String query = "select * from Actors where actor_id = '" + stockID + "'";
   // ResultSet rs = stmt.executeQuery(query);
@@ -821,17 +805,7 @@ public String get_transaction_history(Customer cs)  {
   return "get transaction history";
 }
 
-public double get_market_balance(Customer cs)  {
-  // String query = "select balance from Market where tax_ID = '" + id + "'";
-  // ResultSet rs = stmt.executeQuery(query);
-  // double balance=0;
-  // while (rs.next()){
-  //   balance = rs.getDouble("balance");
-  // }
-  // rs.close();
-  // return balance;
-  return 21.0;
-}
+
 
   public static void main(String[] args){
     Customer m = new Customer();

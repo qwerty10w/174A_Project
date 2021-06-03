@@ -886,6 +886,236 @@ public class Manager{
       System.out.println(e.getMessage());
     }
   }
+  public String monthly_statement(Manager mn) {
+  // int month = getDate().get(Calendar.MONTH); int year = getDate().get(Calendar.YEAR);
+  
+  // String name = ""; String email = ""; String result = "";
+  // String query = "select name, email from Customer where tax_ID = '" + id + "'";
+  // ResultSet rs = stmt.executeQuery(query);
+  // while (rs.next()){
+  //   name = rs.getString("name");
+  //   email = rs.getString("email");
+  // }
+  // result = "Monthly Statement for " + name + " " + email + "\n";
+  // String market = ""; String stock = "";
+  // query = "select description from Market_Transaction where tax_ID = '" + id + "' and month = '" + month + "' and year = '" + year + "'";
+  // rs = stmt.executeQuery(query);
+  // while (rs.next()){
+  //   result = result + rs.getString("description") + "\n";
+  // }
+  // query = "select description from Stock_Transaction where tax_ID = '" + id + "' and month = '" + month + "' and year = '" + year + "'";
+  // rs = stmt.executeQuery(query);
+  // while (rs.next()){
+  //   result = result + rs.getString("description") + "\n";
+  // }
+  // query = "select startingMonthBalance, balance from market where tax_ID = '" + id + "'";
+  // rs = stmt.executeQuery(query);
+  // while (rs.next()){
+  //   result = result + "Initial balance: " + rs.getDouble("startingMonthBalance") +  "   Final balance: " + rs.getDouble("Balance") + "\n";
+  // }
+  // query = "select earnings from Market where tax_ID = '" + id + "'";
+  // rs = stmt.executeQuery(query);
+  // while (rs.next()){
+  //   result = result + "Earnings: " + rs.getDouble("earnings") + "\n";
+  // }
+  // query = "select COUNT(tax_ID) from Stock_Transaction where tax_ID = '" + id + "'";
+  // rs = stmt.executeQuery(query);
+  // while (rs.next()){
+  //   result = result + "Total commissions paid: " + (rs.getInt(1) * 20) + "\n";
+  // }
+  // rs.close();
+  // return result;
+    return "monthly Statement";
+}
+public String customer_report(Manager mn)  {
+  // String query = "select account_ID, balance from Market where tax_ID = '" + id + "'";
+  // ResultSet rs = stmt.executeQuery(query);
+  // int accID=0; double shares =0; String actID = ""; int tID=0;
+  // double balance =0;
+  // while (rs.next()){
+  //   accID = rs.getInt("account_ID");
+  //   balance = rs.getDouble("balance");
+  // }
+  // String returnString = "";
+  // if(accID == 0){
+  //   returnString = "Tax ID does not exist\n";
+  // }
+  // else{
+  //   returnString = "Market account ID is " + accID + " with balance: " + balance + "\n";
+  //   query = "select shares, actor_id from Stock where tax_ID = '" + id + "'";
+  //   rs = stmt.executeQuery(query);
+  //   while (rs.next()){
+  //     returnString = returnString + "Stock account: " + rs.getInt("shares") + " shares in actor ID: " + rs.getString("actor_ID") + "\n";
+  //   }
+  // }
+  // rs.close();
+  // return returnString;
+  return "customer_report";
+}
+public void add_interest() {
+  // Calendar cal = getDate(); ArrayList<Integer> ids = new ArrayList<Integer>();
+  // updateDailyBalance(cal);
+  // String query = "select unique tax_ID from dailyBalance";
+  // ResultSet rs = stmt.executeQuery (query);
+  // int taxID = 0;  
+  // while (rs.next()){
+  //   ids.add(rs.getInt("tax_ID"));
+  // }
+  // for(int x = 0; x < ids.size(); x++){
+  //   double total = 0; double total2 =0;
+  //   query = "select balance, daysAtBalance from dailyBalance where tax_ID = '" + ids.get(x) + "'";
+  //   ResultSet xs = stmt.executeQuery(query);
+  //   while(xs.next()){
+  //     total += xs.getDouble("balance") * xs.getInt("daysAtBalance");
+  //   }
+  //   total = (total/(cal.getActualMaximum(Calendar.DAY_OF_MONTH) + 1));
+  //   total = total * 0.0025;
+  //   total2 = total;
+  //   query = "select balance from Market where tax_ID = '" + ids.get(x) + "'";
+  //   xs = stmt.executeQuery(query);
+  //   while(xs.next()){
+  //     total += xs.getDouble("balance");
+  //   }
+  //   query = "update Market set balance = '" + total + "' where tax_ID = '" + ids.get(x) + "'";
+  //   xs = stmt.executeQuery(query);
+
+  //   query = "select earnings from Market where tax_ID = '" + ids.get(x) + "'";
+  //   xs = stmt.executeQuery(query);
+  //   while(xs.next()){
+  //     total2 += xs.getDouble("earnings");
+  //   }
+  //   query = "update Market set earnings = '" + total2 + "' where tax_ID = '" + ids.get(x) + "'";
+  //   xs = stmt.executeQuery(query);
+  //   xs.close();
+  // }
+  // rs.close();
+}
+public String generate_DTER(){
+  // ArrayList<Integer> ids = new ArrayList<Integer>();
+  // ArrayList<Double> earn = new ArrayList<Double>();
+  // String query = "select tax_ID, earnings from Market where earnings > 9999";
+  //  ResultSet rs = stmt.executeQuery(query);
+  //  double earnings = 0;
+  //  String result = "";
+  //  while (rs.next()){
+  //   ids.add(rs.getInt("tax_ID"));
+  //   earn.add(rs.getDouble("earnings"));
+  //  }
+
+  // for(int x = 0; x < ids.size(); x++){   
+  //   query = "select name, state from Customer where tax_ID = '" + ids.get(x) + "'";
+  //   earnings = earn.get(x);
+  //   ResultSet xs = stmt.executeQuery(query);
+  //   while (xs.next()){
+  //     result = result + xs.getString("name") + " " + xs.getString("state") + " " + earnings + "\n";
+  //   }
+  //   xs.close();
+  // }
+  
+  // rs.close(); 
+  // return result;
+  return "generate_DTER";
+}
+
+public String active_customers() {
+  // ArrayList<Integer> ids = new ArrayList<Integer>();
+  // String query = "select unique tax_ID from Stock_Transaction";
+  //  ResultSet rs = stmt.executeQuery(query);
+  //  double numShares = 0; int taxID = 0;
+  //  String result = "";
+  //  while (rs.next()){
+  //   ids.add(rs.getInt("tax_ID"));
+  // }
+  // for(int x = 0; x < ids.size(); x++){
+  //   query = "select sum(num_shares) from stock_transaction where tax_ID = '" + ids.get(x) + "'";
+  //   ResultSet xs = stmt.executeQuery(query);
+  //   while (xs.next()){
+  //     numShares = xs.getDouble(1);
+  //     if(numShares >= 1000){
+  //       query = "select name from Customer where tax_ID = '" + ids.get(x) + "'";
+  //       ResultSet ys = stmt.executeQuery(query);
+  //       while (ys.next()){
+  //         result = result + ys.getString("name") + "\n";
+  //       }
+  //       ys.close();
+  //     }
+      
+  //   }
+  //   xs.close();
+  // }
+  // rs.close(); 
+  // return result;
+  return "generate_DTER";
+}
+public void delete_transactions()  {
+  // String query = "delete from Market_Transaction";
+  // ResultSet rs = stmt.executeQuery(query);
+  // query = "delete from Stock_Transaction";
+  // rs = stmt.executeQuery(query);
+  // query = "update market set earnings = 0";
+  // rs = stmt.executeQuery(query);
+  // rs.close();
+}
+public void set_date(String date) {
+    // SimpleDateFormat ft = new SimpleDateFormat ("MM-dd-yy");
+    // Calendar cal = Calendar.getInstance();
+    // java.util.Date d = new java.util.Date();
+    // try {
+    //   d = ft.parse(date);
+    // }
+    // catch (ParseException e) {
+    //   e.printStackTrace();
+    // }
+    // cal.setTime(d);
+    // updateDailyBalance(cal);
+    // int currentMonth = 0; int newMonth = (cal.get(Calendar.MONTH) + 1);
+    // String query = "select month from theDate";
+    // ResultSet rs = stmt.executeQuery(query);
+    // while (rs.next()){
+    //   currentMonth = rs.getInt("month");
+    // }
+    // if(currentMonth != newMonth){
+    //   query = "update market set startingMonthBalance = balance";
+    //   rs = stmt.executeQuery(query);
+    // }
+    // query = "delete from theDate";
+    // rs = stmt.executeQuery(query);
+    // query = "insert into theDate values (" + (cal.get(Calendar.MONTH) + 1) + "," +  cal.get(Calendar.DAY_OF_MONTH) + "," + cal.get(Calendar.YEAR) + ")";
+    // rs = stmt.executeQuery(query);
+    // rs.close();
+
+  }
+public void change_stock_price(double newPrice, String stockID) {
+  // String query = "update Actors set current_Price = " + newPrice + " where actor_id = '" + stockID + "'";
+  // ResultSet rs = stmt.executeQuery(query);
+  // rs.close();
+}
+public void toggle_market(Boolean open) {
+  // if(open){
+  //   String query = "update marketOpen set open = 'y'";
+  //   ResultSet rs = stmt.executeQuery (query);
+  // }
+  // else{
+  //   String query = "update marketOpen set open = 'n'";
+  //   ResultSet rs = stmt.executeQuery (query);
+  // }
+}
+public void insert_data() {
+  // try {
+  //   FileInputStream fstream = new FileInputStream("data.txt");
+  //   DataInputStream in = new DataInputStream(fstream);
+  //   BufferedReader br = new BufferedReader(new InputStreamReader(in));
+  //   String strLine;
+  //   ResultSet rs;
+  //   while((strLine = br.readLine()) != null) {
+  //     rs = stmt.executeQuery(strLine);
+  //   }
+  //   in.close();
+  // }
+  // catch (Exception e) {
+  //   System.err.println("Error: " + e.getMessage());
+  // }
+}
 
   public static void main(String[] args){
     Manager m = new Manager();

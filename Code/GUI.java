@@ -314,12 +314,12 @@ catch(Exception e){
 else if (event.getSource() == viewActorProfile){
    String strStockID = actorProfile.getText();
    try{
-     if(cs.check_stock_exists(strStockID)){
+     // if(cs.check_stock_exists(strStockID)){
       infoArea.append("" + cs.get_actor_profile(strStockID));
-  }
-  else{
-     infoArea.append(strStockID + " is not a valid stock ID.\n");
- }
+  // }
+ //  else{
+ //     infoArea.append(strStockID + " is not a valid stock ID.\n");
+ // }
 }
 catch (Exception e){
     e.printStackTrace();
@@ -368,7 +368,7 @@ catch (Exception e){
 else if (event.getSource() == showBalance){
    double balance = 0;
    try{
-    balance = cs.get_market_balance(cs);
+    balance = cs.get_market_balance();
     if(balance != 0){
      infoArea.append("Your current market balance is " + balance + "\n");
  }

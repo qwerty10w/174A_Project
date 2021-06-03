@@ -158,7 +158,7 @@ public class AdminView extends JFrame {
 					int tax_ID = Integer.parseInt(strTax_ID);
 					String result = "";
 					try{
-						// result = db.monthlyStatement(tax_ID);
+						result = mn.monthly_statement(mn);
 						textArea.append(result);
 					}
 					catch(Exception e){
@@ -175,7 +175,7 @@ public class AdminView extends JFrame {
 					int tax_ID = Integer.parseInt(strTax_ID);
 					String result = "";
 					try{
-						// result = db.customerReport(tax_ID);
+						result = mn.customer_report(mn);
 						textArea.append(result);
 					}
 					catch(Exception e){
@@ -186,7 +186,7 @@ public class AdminView extends JFrame {
 			}
 			else if (event.getSource() == addInterest){
 				try{
-					// db.addInterest();
+					mn.add_interest();
 					textArea.append("Interest has been added to all accounts \n");
 				}
 				catch(Exception e){
@@ -195,7 +195,7 @@ public class AdminView extends JFrame {
 			}
 			else if (event.getSource() == generateDTER){
 				try{
-					// textArea.append(db.generateDTER());
+					textArea.append(mn.generate_DTER());
 				}
 				catch(Exception e){
 						e.printStackTrace();
@@ -203,7 +203,7 @@ public class AdminView extends JFrame {
 			}
 			else if (event.getSource() == listActiveCustomers){
 				try{
-					// textArea.append(db.activeCustomers());
+					textArea.append(mn.active_customers());
 				}
 				catch(Exception e){
 						e.printStackTrace();
@@ -211,7 +211,7 @@ public class AdminView extends JFrame {
 			}
 			else if (event.getSource() == deleteTransactions){
 				try{
-					// db.deleteTransactions();
+					mn.delete_transactions();
 					textArea.append("List of transactions from each of the accounts was deleted \n");
 				}
 				catch(Exception e){
@@ -222,7 +222,7 @@ public class AdminView extends JFrame {
 			else if (event.getSource() == setDate){
 				String aDate = dateTextField.getText();
 				try{
-					// db.setDate(aDate);
+					mn.set_date(aDate);
 				}
 				catch(Exception e){
 					e.printStackTrace();
@@ -237,7 +237,7 @@ public class AdminView extends JFrame {
 				String stockPrice = updateStockPriceField.getText();
 				double intStockPrice = Double.parseDouble(stockPrice);
 				try{
-					// db.changeStockPrice(intStockPrice, stockID);
+					mn.change_stock_price(intStockPrice, stockID);
 					textArea.append("Price of " + stockID + " is now " + intStockPrice);
 				}
 				catch(Exception e){
@@ -246,7 +246,7 @@ public class AdminView extends JFrame {
 			}
 			else if(event.getSource() == openMarket){
 				try{
-					// db.toggleMarketOpenClose(true);
+					mn.toggle_market(true);
 				}
 				catch(Exception e){
 					e.printStackTrace();
@@ -255,7 +255,7 @@ public class AdminView extends JFrame {
 			}
 			else if(event.getSource() == closeMarket){
 				try{
-					// db.toggleMarketOpenClose(false);
+					mn.toggle_market(false);
 				}
 				catch(Exception e){
 					e.printStackTrace();
@@ -264,7 +264,7 @@ public class AdminView extends JFrame {
 			}
 			else if(event.getSource() == reset){
 				try{
-					// db.insertData();
+					mn.insert_data();
 					textArea.append("Tables are restored to original state \n");
 				}
 				catch(Exception e){

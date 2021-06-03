@@ -26,18 +26,6 @@ public class Manager{
     this.date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
   }
 
-  public Connection connect(String url){
-    Connection conn = null;
-    try{
-      conn = DriverManager.getConnection(url);
-      System.out.println("Connection to db established");
-      return conn;
-    }catch (SQLException e){
-      System.out.println(e.getMessage());
-      return null;
-    }
-  }
-
   public void get_date(){
     String query = "SELECT * FROM Calendar";
     try{
@@ -51,8 +39,62 @@ public class Manager{
     }
   }
 
-  public void close_market(){
+  //ADMINISTRATIVE FUNCTIONS
+  public Connection connect(String url){
+    Connection conn = null;
+    try{
+      conn = DriverManager.getConnection(url);
+      System.out.println("Connection to db established");
+      return conn;
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+      return null;
+    }
+  }
+
+  public void close_market(int day, int month, int year){
     this.open = false;
+
+    String query = "SELECT symbol, price FROM Actors";
+    String query2 = "SELECT ID, balance FROM Accounts WHERE type = 0";
+
+    try{
+      //recod stock closing prices
+      Statement s = this.conn.createStatement();
+      ResultSet rs = s.executeQuery(query);
+      while(rs.next()){
+        String symbol = rs.getString("symbol");
+        double price = rs.getDouble("price");
+        this.insert_closing_price(symbol, this.date, price);
+      }
+      rs.close();
+
+      //record end of day balances for market accounts
+      Statement s2 = this.conn.createStatement();
+      ResultSet rs2 = s2.executeQuery(query2);
+      while(rs2.next()){
+        int acc_id = rs2.getInt("ID");
+        double bal = rs2.getDouble("balance");
+
+        this.insert_closing_balance(acc_id, bal);
+      }
+      rs2.close();
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+
+    //CHANGE DATE
+    if(day == 31 && month == 12){
+      this.set_date(1, 1, year + 1);
+    }else if((day == 30 && month == 9) || (day == 30 && month == 4) || (day == 30 && month == 6) || (day == 30 && month == 11)){
+      this.set_date(1, month + 1, year);
+    }else if((day == 31 && month == 1) || (day == 31 && month == 3) || (day == 31 && month == 5) || (day == 31 && month == 7) || (day == 31 && month == 8) || (day == 31 && month == 10)){
+      this.set_date(1, month + 1, year);
+    }else if(day == 28 && month == 2){
+      this.set_date(1, month + 1, year);
+    }else{
+      this.set_date(day + 1, month, year);
+    }
   }
 
   public void set_date(int day, int month, int year){
@@ -85,81 +127,128 @@ public class Manager{
       System.out.println(e.getMessage());
     }
   }
+
   public void create_admin(String username, String password){
     System.out.println("In create_admin in manager class");
     System.out.println("Attributes passed username: " + username + "password: " + password);
   }
+
   public void login(String username, String password){
     System.out.println("In login in manager class");
     System.out.println("Attributes passed username: " + username + "password: " + password);
   }
-  public void deposit(int acc_id, double amount){
-    String query = "SELECT balance FROM Accounts WHERE Accounts.ID = ?";
-    String query2 = "UPDATE Accounts SET balance = ? WHERE Accounts.ID = ?";
-    String query3 = "INSERT INTO Market_Transactions(ID, type, amount, date, balance) VALUES(?,?,?,?,?)";
 
+
+
+
+  //STOCK AND MARKET ACCOUNT FUNCTIONS --------------------------------------------------
+  public double get_balance(int acc_id){
+    String query = "SELECT balance FROM Accounts WHERE Accounts.ID = ?";
+    double balance = -1;
     try{
       //Get current balance
       PreparedStatement ps = this.conn.prepareStatement(query);
       ps.setInt(1, acc_id);
       ResultSet rs = ps.executeQuery();
-      double balance = rs.getDouble("balance");
-      double new_balance = balance + amount;
+      balance = rs.getDouble("balance");
       rs.close();
       ps.close();
-
-      //Set new balance
-      PreparedStatement ps2 = this.conn.prepareStatement(query2);
-      ps2.setDouble(1, new_balance);
-      ps2.setInt(2, acc_id);
-      ps2.executeUpdate();
-      ps2.close();
-
-      //add entry in Market_Transactions
-      PreparedStatement ps3 = this.conn.prepareStatement(query3);
-      ps3.setInt(1, acc_id);
-      ps3.setInt(2, 1);
-      ps3.setDouble(3, amount);
-      ps3.setString(4, this.date);
-      ps3.setDouble(5, new_balance);
-      ps3.executeUpdate();
-      ps3.close();
     }catch (SQLException e){
       System.out.println(e.getMessage());
     }
+    return balance;
   }
 
-  public void withdraw(int acc_id, int amount){
-    String query = "SELECT balance FROM Accounts WHERE Accounts.ID = ?";
-    String query2 = "UPDATE Accounts SET balance = ? WHERE Accounts.ID = ?";
-    String query3 = "INSERT INTO Market_Transactions(ID, type, amount, date, balance) VALUES(?,?,?,?,?)";
 
+
+
+  //MARKET ACCOUNT FUNCTIONS -------------------------------------------------------------
+  //transactions
+  public boolean deposit(int acc_id, double amount){
+    //get current balance and calculate new balance
+    double balance = this.get_balance(acc_id);
+    double new_balance = balance + amount;
+
+    //set new balance
+    this.add_balance(acc_id, amount);
+
+    //add entry in Market_Transactions
+    this.insert_market_transaction(acc_id, 1, amount, new_balance);
+
+    return true;
+  }
+
+  public boolean withdraw(int acc_id, int amount){
+    //get current balance and calculate new balance
+    double balance = this.get_balance(acc_id);
+    double new_balance = balance - amount;
+
+    //fail if balance will become < 0
+    if(new_balance < 0){
+      return false;
+    }
+
+    //set new balance
+    this.subtract_balance(acc_id, amount);
+
+    //add entry in Market_Transactions
+    this.insert_market_transaction(acc_id, 0, amount, new_balance);
+
+    return true;
+  }
+
+  public void accrue_interest(int acc_id){
+    //Get avg daily balance and calculate interest
+    double avg_balance = this.get_avg_daily_balance(acc_id, this.month, this.year);
+    double interest = (0.02/12) * avg_balance;
+
+    //Get current balance and calculate new balance
+    double curr_balance = this.get_balance(acc_id);
+    double new_balance = curr_balance + interest;
+
+    //record transaction in transaction table
+    this.insert_market_transaction(acc_id, 2, interest, new_balance);
+
+    //add money to market account
+    this.add_balance(acc_id, interest);
+  }
+
+  //helpers
+  public double get_avg_daily_balance(int acc_id, int month, int year){
+    String query = "SELECT AVG(balance) AS avg FROM (\n"
+        + "SELECT ID, balance FROM Daily_Market_Balance \n"
+        + "WHERE date LIKE ?) AS t \n"
+        + "WHERE t.ID = ?"
+        + "GROUP BY t.ID";
+
+    double avg_balance = -1;
     try{
-      //Get current balance
       PreparedStatement ps = this.conn.prepareStatement(query);
-      ps.setInt(1, acc_id);
+      String like_string = "\"" + String.valueOf(year) + "-" + String.valueOf(month) + "%\"";
+      ps.setString(1, like_string);
+      ps.setInt(2, acc_id);
       ResultSet rs = ps.executeQuery();
-      double balance = rs.getDouble("balance");
-      double new_balance = balance - amount;
+      avg_balance = rs.getDouble("avg");
       rs.close();
       ps.close();
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+    return avg_balance;
+  }
 
-      //set new balance
-      PreparedStatement ps2 = this.conn.prepareStatement(query2);
-      ps2.setDouble(1, new_balance);
-      ps2.setInt(2, acc_id);
-      ps2.executeUpdate();
-      ps2.close();
-
-      //add entry in Market_Transactions
-      PreparedStatement ps3 = this.conn.prepareStatement(query3);
-      ps3.setInt(1, acc_id);
-      ps3.setInt(2, 0);
-      ps3.setDouble(3, amount);
-      ps3.setString(4, this.date);
-      ps3.setDouble(5, new_balance);
-      ps3.executeUpdate();
-      ps3.close();
+  public void insert_market_transaction(int acc_id, int type, double amount, double new_balance){
+    String query = "INSERT INTO Market_Transactions(ID, type, amount, date, balance) VALUES(?,?,?,?,?)";
+    try{
+      //Add entry in Market_Transactions
+      PreparedStatement ps = this.conn.prepareStatement(query);
+      ps.setInt(1, acc_id);
+      ps.setInt(2, type);
+      ps.setDouble(3, amount);
+      ps.setString(4, this.date);
+      ps.setDouble(5, new_balance);
+      ps.executeUpdate();
+      ps.close();
     }catch (SQLException e){
       System.out.println(e.getMessage());
     }
@@ -191,8 +280,44 @@ public class Manager{
     }
   }
 
+  public void insert_closing_balance(int acc_id, double balance){
+    String query = "INSERT INTO Daily_Market_Balance(ID, balance, date) \n"
+    + "SELECT ?, ?, ? \n"
+    + "WHERE NOT EXISTS (SELECT * FROM Daily_Market_Balance WHERE ID = ? AND date = ?)";
+    try{
+      PreparedStatement ps = this.conn.prepareStatement(query);
+      ps.setInt(1, acc_id);
+      ps.setDouble(2, balance);
+      ps.setString(3, this.date);
+      ps.setInt(4, acc_id);
+      ps.setString(5, this.date);
+      ps.executeUpdate();
+      ps.close();
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+  }
+
+  public void set_new_price(String symbol, double price){
+    String query = "UPDATE Actors SET price = ? WHERE symbol = ?";
+    try{
+      PreparedStatement ps = this.conn.prepareStatement(query);
+      ps.setDouble(1, price);
+      ps.setString(2, symbol);
+      ps.executeUpdate();
+      ps.close();
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+  }
+
+
+
+
+  //STOCK ACCOUNT FUNCTIONS-----------------------------------------------------------------
+  //transactions
   public void buy(int acc_id, String symbol, int amount){
-    String query0 = "SELECT balance FROM Accounts WHERE Accounts.ID = ?";
+    //queries
     String query = "SELECT ID, balance FROM Acounts WHERE Accounts.user = (SELECT user FROM Accounts WHERE ID = ?) AND Accounts.type = 0";
     String query2 = "SELECT price FROM Actors WHERE Actors.symbol = ?";
     String query3 = "INSERT INTO Stock_Transactions(ID, symbol, type, date, price, amount, balance) VALUES(?,?,?,?,?,?,?)";
@@ -201,15 +326,9 @@ public class Manager{
     String query_already_owns = "UPDATE Owns SET amount = amount + ? WHERE ID = ? AND symbol = ?";
     String query_update_market_balance = "UPDATE Accounts SET balance = ? WHERE Accounts.ID = ?";
 
-    try{
-      //Get initial stock account balance
-      PreparedStatement ps0 = this.conn.prepareStatement(query0);
-      ps0.setInt(1, acc_id);
-      ResultSet rs0 = ps0.executeQuery();
-      double balance = rs0.getDouble("balance");
-      rs0.close();
-      ps0.close();
+    double balance = this.get_balance(acc_id);
 
+    try{
       //Get ID and balance from market account
       PreparedStatement ps = this.conn.prepareStatement(query);
       ps.setInt(1, acc_id);
@@ -365,44 +484,25 @@ public class Manager{
     }
   }
 
-  public String select_user(int tax_id){
-    String query = "SELECT username FROM Customers WHERE Customers.tax_id = ?";
-    String result = "";
+  public void insert_closing_price(String symbol, String date, double price){
+    String query = "INSERT INTO Closing_Prices(symbol, date, price) \n"
+    + "SELECT ?, ?, ? \n"
+    + "WHERE NOT EXISTS (SELECT * FROM Closing_Prices WHERE symbol = ? AND date = ?)";
     try{
       PreparedStatement ps = this.conn.prepareStatement(query);
-      ps.setInt(1, tax_id);
-      ResultSet rs = ps.executeQuery();
-      result = rs.getString("username");
-      rs.close();
+      ps.setString(1, symbol);
+      ps.setString(2, this.date);
+      ps.setDouble(3, price);
+      ps.setString(4, symbol);
+      ps.setString(5, this.date);
+      ps.executeUpdate();
       ps.close();
     }catch (SQLException e){
       System.out.println(e.getMessage());
     }
-    if(!result.equals("")){
-      return result;
-    }else{
-      return "FAIL";
-    }
   }
 
-  public int select_account(int tax_id, int type){
-    String user = select_user(tax_id);
-    String query = "SELECT ID FROM Accounts WHERE Accounts.user = ? AND Accounts.type = ?";
-    int result = -1;
-    try{
-      PreparedStatement ps = this.conn.prepareStatement(query);
-      ps.setString(1, user);
-      ps.setInt(2, type);
-      ResultSet rs = ps.executeQuery();
-      result = rs.getInt("ID");
-      rs.close();
-      ps.close();
-    }catch (SQLException e){
-      System.out.println(e.getMessage());
-    }
-    return result;
-  }
-
+  //helpers
   public void insert_stock(int acc_id, String symbol, int amount){
     String query = "INSERT INTO Owns(ID, symbol, amount) \n"
             + "SELECT ?, ?, ? \n"
@@ -420,48 +520,16 @@ public class Manager{
     }
   }
 
-  public void insert_actor(String symbol, String name, String dob, String price, String amount){
-    String[] args = {symbol, name, dob};
-    String query = "INSERT INTO Actors(symbol, name, DOB, price, amount) VALUES(?,?,?,?,?)";
+  public void update_all_stock_balances(){
+    String query = "SELECT ID FROM Accounts WHERE Accounts.type = 1";
     try{
-      PreparedStatement ps = this.conn.prepareStatement(query);
-      for(int i = 1; i < 4; i++){
-        ps.setString(i, args[i - 1]);
+      Statement s = this.conn.createStatement();
+      ResultSet rs = s.executeQuery(query);
+      while(rs.next()){
+        int acc_id = rs.getInt("ID");
+        this.update_stock_balance(acc_id);
       }
-      ps.setFloat(4, Float.parseFloat(price));
-      ps.setInt(5, Integer.parseInt(amount));
-      ps.executeUpdate();
-    }catch (SQLException e){
-      System.out.println(e.getMessage());
-    }
-  }
-
-  public void insert_stock_account(String user){
-    // Inserts stock account with given username
-    String query = "INSERT INTO Accounts(user, type, balance) \n"
-            + "SELECT ?, \"1\", 0 \n"
-            + "WHERE NOT EXISTS (SELECT * FROM Accounts WHERE user = ? AND type = \"1\")";
-    try{
-      PreparedStatement ps = this.conn.prepareStatement(query);
-      ps.setString(1, user);
-      ps.setString(2, user);
-      ps.executeUpdate();
-    }catch (SQLException e){
-      System.out.println(e.getMessage());
-    }
-  }
-
-  public void insert_market_account(String user, int balance){
-    //Inserts Market Account with given username and balance
-    String query = "INSERT INTO Accounts(user, type, balance) \n"
-            + "SELECT ?, \"0\", ? \n"
-            + "WHERE NOT EXISTS (SELECT * FROM Accounts WHERE user = ? AND type = \"0\")";
-    try{
-      PreparedStatement ps = this.conn.prepareStatement(query);
-      ps.setString(1, user);
-      ps.setInt(2, balance);
-      ps.setString(3, user);
-      ps.executeUpdate();
+      rs.close();
     }catch (SQLException e){
       System.out.println(e.getMessage());
     }
@@ -508,18 +576,92 @@ public class Manager{
     }
   }
 
-  public void update_all_stock_balances(){
-    String query = "SELECT ID FROM Accounts WHERE Accounts.type = 1";
+  public void insert_actor(String symbol, String name, String dob, String price, String amount){
+    String[] args = {symbol, name, dob};
+    String query = "INSERT INTO Actors(symbol, name, DOB, price, amount) VALUES(?,?,?,?,?)";
     try{
-      Statement s = this.conn.createStatement();
-      ResultSet rs = s.executeQuery(query);
-      while(rs.next()){
-        int acc_id = rs.getInt("ID");
-        this.update_stock_balance(acc_id);
+      PreparedStatement ps = this.conn.prepareStatement(query);
+      for(int i = 1; i < 4; i++){
+        ps.setString(i, args[i - 1]);
       }
-      rs.close();
+      ps.setFloat(4, Float.parseFloat(price));
+      ps.setInt(5, Integer.parseInt(amount));
+      ps.executeUpdate();
     }catch (SQLException e){
       System.out.println(e.getMessage());
+    }
+  }
+
+  public void insert_stock_account(String user){
+    // Inserts stock account with given username
+    String query = "INSERT INTO Accounts(user, type, balance) \n"
+    + "SELECT ?, \"1\", 0 \n"
+    + "WHERE NOT EXISTS (SELECT * FROM Accounts WHERE user = ? AND type = \"1\")";
+    try{
+      PreparedStatement ps = this.conn.prepareStatement(query);
+      ps.setString(1, user);
+      ps.setString(2, user);
+      ps.executeUpdate();
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+  }
+
+  public void insert_market_account(String user, int balance){
+    //Inserts Market Account with given username and balance
+    String query = "INSERT INTO Accounts(user, type, balance) \n"
+            + "SELECT ?, \"0\", ? \n"
+            + "WHERE NOT EXISTS (SELECT * FROM Accounts WHERE user = ? AND type = \"0\")";
+    try{
+      PreparedStatement ps = this.conn.prepareStatement(query);
+      ps.setString(1, user);
+      ps.setInt(2, balance);
+      ps.setString(3, user);
+      ps.executeUpdate();
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+  }
+
+
+
+
+  //PROBABLY TO REMOVE LATER -----------------------------------------------------------------
+  public int select_account(int tax_id, int type){
+    String user = select_user(tax_id);
+    String query = "SELECT ID FROM Accounts WHERE Accounts.user = ? AND Accounts.type = ?";
+    int result = -1;
+    try{
+      PreparedStatement ps = this.conn.prepareStatement(query);
+      ps.setString(1, user);
+      ps.setInt(2, type);
+      ResultSet rs = ps.executeQuery();
+      result = rs.getInt("ID");
+      rs.close();
+      ps.close();
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+    return result;
+  }
+
+  public String select_user(int tax_id){
+    String query = "SELECT username FROM Customers WHERE Customers.tax_id = ?";
+    String result = "";
+    try{
+      PreparedStatement ps = this.conn.prepareStatement(query);
+      ps.setInt(1, tax_id);
+      ResultSet rs = ps.executeQuery();
+      result = rs.getString("username");
+      rs.close();
+      ps.close();
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+    if(!result.equals("")){
+      return result;
+    }else{
+      return "FAIL";
     }
   }
 

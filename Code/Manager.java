@@ -291,7 +291,7 @@ public class Manager{
     return dter;
   }
 
-  public String customer_report(String username)  {
+  public String customer_report(String username){
     int market_id = get_market_from_user(username);
     int stock_id = get_stock_from_user(username);
 
@@ -303,6 +303,21 @@ public class Manager{
               + "\nStock Account (ID " + String.valueOf(stock_id) + "): $" + String.valueOf(stock_balance);
 
     return result;
+  }
+
+  public boolean wipe_transactions(){
+    String query = "DELETE FROM Stock_Transactions";
+    String query2 = "DELETE FROM Market_Transactions";
+
+    try{
+      Statement s = this.conn.createStatement();
+      s.execute(query);
+
+      Statement s2 = this.conn.createStatement();
+      s2.execute(query);
+    }catch (SQLException e){
+      System.out.printn(e.getMessage());
+    }
   }
 
   //help functions

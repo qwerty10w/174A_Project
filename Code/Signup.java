@@ -1,5 +1,4 @@
-package net.project;
-
+// package net.project;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -208,11 +207,11 @@ public class Signup extends JFrame {
 					// some sort of bug causing newCustomer to crash
 					if(success){
 						nameTextField.setText("about to switch");
-						// GUI gui = new GUI(db, tax_ID);
-						// gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-						// gui.setSize(700,800);
-						// gui.setVisible(true);
-						// gui.setResizable(false);
+						GUI gui = new GUI(cs);
+						gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+						gui.setSize(700,800);
+						gui.setVisible(true);
+						gui.setResizable(false);
 						frame.dispose();
 					}
 				}

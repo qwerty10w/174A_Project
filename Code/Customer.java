@@ -1,4 +1,4 @@
-package net.project;
+// package net.project;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -695,10 +695,146 @@ public class Customer{
     }
   }
 
+  public String top_movies(int start, int end) {
+  // String query = "select M_NAME from CS174A.movies where M_RANKING > 4.9 and M_YEAR > '" + start + "' and M_YEAR < '" + end + "'";
+  // ResultSet rs = stmt.executeQuery(query);
+  // int m_id = 0; String result = "";
+  // while (rs.next()){
+  //   result = result + rs.getString("M_NAME") + "\n";
+  // }
+
+  // rs.close();
+  // return result;
+    return "top movies";
+  }
+public Boolean check_stock_exists(String stockID)  {
+  // String query = "select name from Actors where actor_id = '" + stockID + "'";
+  // ResultSet rs = stmt.executeQuery(query);
+  // String actorName = "";
+  // while (rs.next()){
+  //   actorName = rs.getString("name");
+  // }
+  // if(actorName.equals("")){
+  //   rs.close();
+  //   return false;
+  // }
+  // else{
+  //   rs.close();
+  //   return true;
+  // }
+  return true;
+  }
+public String get_actor_profile(String stockID)  {
+  // String query = "select * from Actors where actor_id = '" + stockID + "'";
+  // ResultSet rs = stmt.executeQuery(query);
+  // String actorId = ""; double price = 0; String name = ""; String dob = "";
+  // String title = ""; String role = ""; int year = 0; double contract = 0;
+  // while (rs.next()){
+  //   actorId = rs.getString("actor_id");
+  //   price = rs.getDouble("current_price");
+  //   name = rs.getString("name");
+  //   dob = rs.getString("dob");
+  //   title = rs.getString("movie_Title");
+  //   role = rs.getString("role");
+  //   year = rs.getInt("year");
+  //   contract = rs.getDouble("contract");
+  // }
+  // rs.close();
+  // String result = "Actor ID: " + actorId + " Current Stock Price: " + price + " Name: " + name + " Date of Birth: " + dob + 
+  // "\nMovie Title: " + title + " Role: " + role + " Year: " + year + " Contract Price: " + contract + "\n";
+  // return result;
+    return "get actor profile";
+}
+public String movie_info(String title) throws SQLException{
+  // String query = "select * from CS174A.movies where M_NAME = '" + title + "'";
+  // ResultSet rs = stmt.executeQuery(query);
+  // int m_id = 0; String m_name = ""; int m_year = 0; double m_ranking = 0;
+  // while (rs.next()){
+  //   m_id = rs.getInt("M_ID");
+  //   m_name = rs.getString("M_NAME");
+  //   m_year = rs.getInt("M_YEAR");
+  //   m_ranking = rs.getDouble("M_RANKING");
+  // }
+
+  // rs.close();
+  // String result = "Movie ID: " + m_id + " Name: " + m_name + " Year: " + m_year + " Ranking: " + m_ranking + "\n";
+  // return result;
+  return "movie info";
+}
+
+public String movie_review(String title) throws SQLException {
+  // String query = "select M_ID from CS174A.movies where M_NAME = '" + title + "'";
+  // ResultSet rs = stmt.executeQuery(query);
+  // int m_id = 0; String review = "";
+  // while (rs.next()){
+  //   m_id = rs.getInt("M_ID");
+  // }
+
+  // query = "select R_REVIEW from CS174A.reviews where R_ID =  '" + m_id + "'";
+  // rs = stmt.executeQuery(query);
+  // while (rs.next()){
+  //   review = rs.getString("R_REVIEW");
+  // }
+
+  // rs.close();
+  // String result = "Review for the Movie: " + title + " is: " + review + "\n";
+  // return result;
+  return "movie review";
+}
+
+public Boolean check_transaction_history(Customer cs)  {
+  // String market = ""; String stock = "";
+  // String query = "select description from Market_Transaction where tax_ID = '" + id + "'";
+  // ResultSet rs = stmt.executeQuery(query);
+  // while (rs.next()){
+  //   market = rs.getString("description");
+  // }
+  // query = "select description from Stock_Transaction where tax_ID = '" + id + "'";
+  // rs = stmt.executeQuery(query);
+  // while (rs.next()){
+  //   stock = rs.getString("description");
+  // }
+  // rs.close();
+  // if(market == null && stock == null){
+  //   return false;
+  // }
+  // else{
+  //   return true;
+  // }
+  return true;
+}
+
+public String get_transaction_history(Customer cs)  {
+  // String market = ""; String stock = ""; String result = "";
+  // String query = "select description from Market_Transaction where tax_ID = '" + id + "'";
+  // ResultSet rs = stmt.executeQuery(query);
+  // while (rs.next()){
+  //   result = result + rs.getString("description") + "\n";
+  // }
+  // query = "select description from Stock_Transaction where tax_ID = '" + id + "'";
+  // rs = stmt.executeQuery(query);
+  // while (rs.next()){
+  //   result = result + rs.getString("description") + "\n";
+  // }
+  // rs.close();
+  // return result;
+  return "get transaction history";
+}
+
+public double get_market_balance(Customer cs)  {
+  // String query = "select balance from Market where tax_ID = '" + id + "'";
+  // ResultSet rs = stmt.executeQuery(query);
+  // double balance=0;
+  // while (rs.next()){
+  //   balance = rs.getDouble("balance");
+  // }
+  // rs.close();
+  // return balance;
+  return 21.0;
+}
+
   public static void main(String[] args){
     Customer m = new Customer();
-    // m.signup("Neil Sadhukhan", "test Address", "CA", "4088960412", "neil.sad@gmail.com", "test", "te", 10000);
-    // m.login("test", "te");
-    // m.withdraw(100000000);
   }
 }
+

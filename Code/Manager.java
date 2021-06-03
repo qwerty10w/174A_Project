@@ -1,4 +1,4 @@
-package net.project;
+// package net.project;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -24,9 +24,9 @@ public class Manager{
   public Connection conn;
 
   public Manager(){
-    this.conn = connect("jdbc:sqlite:E:/sqlite/db/chinook.db");
-    this.get_date();
-    this.date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
+    // this.conn = connect("jdbc:sqlite:E:/sqlite/db/chinook.db");
+    // this.get_date();
+    // this.date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
   }
 
   public void get_date(){
@@ -889,6 +889,6 @@ public class Manager{
 
   public static void main(String[] args){
     Manager m = new Manager();
-    m.withdraw(25, 100000);
+    // m.withdraw(25, 100000);
   }
 }

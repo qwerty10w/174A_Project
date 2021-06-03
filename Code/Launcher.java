@@ -1,5 +1,4 @@
-package net.project;
-
+// package net.project;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.KeyEvent;
@@ -25,10 +24,11 @@ public class Launcher extends JFrame {
 	JPanel checkIt;
 
 	// Dataloader dl;
-	// Manager mn;
+	Manager mn;
 	Customer cs;
 	public Launcher(){
 		cs = new Customer();
+		mn = new Manager();
 		// dl = new Dataloader();
 		// mn = new Manager();
 
@@ -118,7 +118,7 @@ public class Launcher extends JFrame {
     				if(login_success){
     					//call new Admin gui
     					// AdminView ad = new AdminView(dl, id);
-    					AdminView ad = new AdminView(cs);
+    					AdminView ad = new AdminView(mn);
     					ad.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     					ad.setSize(1400,800);
     					ad.setVisible(true);
@@ -147,7 +147,6 @@ public class Launcher extends JFrame {
     				}
 
     				if(login_success){
-    					// GUI gui = new GUI(dl, id);
     					GUI gui = new GUI(cs);
     					gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     					gui.setSize(700,800);

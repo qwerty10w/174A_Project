@@ -1,5 +1,4 @@
-package net.project;
-
+// package net.project;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -7,7 +6,7 @@ import javax.swing.plaf.FontUIResource;
 
 public class AdminView extends JFrame {
 	// Dataloader dl;
-	Customer cs;
+	Manager mn;
 
 	JButton gmsButton;
 	JTextField gmsTextField;
@@ -40,11 +39,11 @@ public class AdminView extends JFrame {
 
 
 
-	public AdminView(Customer mydb){
+	public AdminView(Manager mydb){
 		super("Admin");
 		setLayout(null);
 
-		cs = mydb;
+		mn = mydb;
 
 		FontUIResource fbold = new FontUIResource(Font.SANS_SERIF,Font.BOLD,14);
 		FontUIResource fplain = new FontUIResource(Font.SANS_SERIF,Font.PLAIN,16);

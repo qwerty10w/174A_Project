@@ -1,5 +1,4 @@
-package net.project;
-
+// package net.project;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
@@ -294,100 +293,100 @@ catch (Exception e){
     e.printStackTrace();
 }
 }
-//     		//TOP MOVIES
-// else if (event.getSource() == topMovies){
-//    String strStartDate = startDate.getText();
-//    String strEndDate = endDate.getText();
-//    int intStartDate = Integer.parseInt(strStartDate);
-//    int intEndDate = Integer.parseInt(strEndDate);
+    		//TOP MOVIES
+else if (event.getSource() == topMovies){
+   String strStartDate = startDate.getText();
+   String strEndDate = endDate.getText();
+   int intStartDate = Integer.parseInt(strStartDate);
+   int intEndDate = Integer.parseInt(strEndDate);
 
-//    String result = "";
-//    try{
-//     result = db.topMovies(intStartDate, intEndDate);
-//     infoArea.append(result);
-// }
-// catch(Exception e){
-//     e.printStackTrace();
-// }
+   String result = "";
+   try{
+    result = cs.top_movies(intStartDate, intEndDate);
+    infoArea.append(result);
+}
+catch(Exception e){
+    e.printStackTrace();
+}
 
-// }
-//     		//VIEW ACTOR PROFILE
-// else if (event.getSource() == viewActorProfile){
-//    String strStockID = actorProfile.getText();
-//    try{
-//      if(db.checkStockExists(strStockID)){
-//       infoArea.append("" + db.getActorProfile(strStockID));
-//   }
-//   else{
-//      infoArea.append(strStockID + " is not a valid stock ID.\n");
-//  }
-// }
-// catch (Exception e){
-//     e.printStackTrace();
-// }
-// }
-//     		//MOVIE INFO
-// else if (event.getSource() == movieInfo){
-//    String movieTitle = movieInfoField.getText();
-//    String result = "";
-//    try{
-//     result = db.movieInfo(movieTitle);
-//     infoArea.append(result);
-// }
-// catch(Exception e){
-//     e.printStackTrace();
-// }
-// }
-//     		//MOVIE REVIEWS
-// else if (event.getSource() == movieReviews){
-//    String strMovieReviews = movieReviewsField.getText();
-//    String result = "";
-//    try{
-//     result = db.movieReview(strMovieReviews);
-//     infoArea.append(result);
-// }
-// catch(Exception e){
-//     e.printStackTrace();
-// }
+}
+    		//VIEW ACTOR PROFILE
+else if (event.getSource() == viewActorProfile){
+   String strStockID = actorProfile.getText();
+   try{
+     if(cs.check_stock_exists(strStockID)){
+      infoArea.append("" + cs.get_actor_profile(strStockID));
+  }
+  else{
+     infoArea.append(strStockID + " is not a valid stock ID.\n");
+ }
+}
+catch (Exception e){
+    e.printStackTrace();
+}
+}
+    		//MOVIE INFO
+else if (event.getSource() == movieInfo){
+   String movieTitle = movieInfoField.getText();
+   String result = "";
+   try{
+    result = cs.movie_info(movieTitle);
+    infoArea.append(result);
+}
+catch(Exception e){
+    e.printStackTrace();
+}
+}
+    		//MOVIE REVIEWS
+else if (event.getSource() == movieReviews){
+   String strMovieReviews = movieReviewsField.getText();
+   String result = "";
+   try{
+    result = cs.movie_review(strMovieReviews);
+    infoArea.append(result);
+}
+catch(Exception e){
+    e.printStackTrace();
+}
 
-// }
-//     		//TRANSACTION HISTORY
-// else if (event.getSource() == transactionHistory){
-//    try{
-//     if(db.checkTransactionHistory(id)){
-//      infoArea.append(db.getTransactionHistory(id) + "");
-//  }
-//  else{
-//      infoArea.append("You have not made any transactions.\n");
-//  }
-// }
-// catch (Exception e){
-//     e.printStackTrace();
-// }
-// }
-//     		//SHOW BALANCE
-// else if (event.getSource() == showBalance){
-//    double balance = 0;
-//    try{
-//     balance = db.getMarketBalance(id);
-//     if(balance != 0){
-//      infoArea.append("Your current market balance is " + balance + "\n");
-//  }
-//  else{
-//      infoArea.append("You do not have a market account.\n");
-//  }
-// }
-// catch (Exception e){
-//     e.printStackTrace();
-// }
-// }
-// else if(event.getSource() == clear){
-//     infoArea.setText("");
-// }
-// else if(event.getSource() == logout){
-//     Launcher mjf = new Launcher();
-//     dispose();
-// }
+}
+    		//TRANSACTION HISTORY
+else if (event.getSource() == transactionHistory){
+   try{
+    if(cs.check_transaction_history(cs)){
+     infoArea.append(cs.get_transaction_history(cs) + "");
+ }
+ else{
+     infoArea.append("You have not made any transactions.\n");
+ }
+}
+catch (Exception e){
+    e.printStackTrace();
+}
+}
+    		//SHOW BALANCE
+else if (event.getSource() == showBalance){
+   double balance = 0;
+   try{
+    balance = cs.get_market_balance(cs);
+    if(balance != 0){
+     infoArea.append("Your current market balance is " + balance + "\n");
+ }
+ else{
+     infoArea.append("You do not have a market account.\n");
+ }
+}
+catch (Exception e){
+    e.printStackTrace();
+}
+}
+else if(event.getSource() == clear){
+    infoArea.setText("");
+}
+else if(event.getSource() == logout){
+    Launcher mjf = new Launcher();
+    dispose();
+}
 	} // actionPerformed
 
     }// innerclass MyHandler

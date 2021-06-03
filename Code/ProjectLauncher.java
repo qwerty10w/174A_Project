@@ -1,5 +1,4 @@
-package net.project;
-
+// package net.project;
 import javax.swing.JFrame;
 public class ProjectLauncher {
 	public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package net.project;
+// package net.project;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -24,9 +24,9 @@ public class Manager{
   public Connection conn;
 
   public Manager(){
-    this.conn = connect("jdbc:sqlite:E:/sqlite/db/chinook.db");
-    this.get_date();
-    this.date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
+    // this.conn = connect("jdbc:sqlite:E:/sqlite/db/chinook.db");
+    // this.get_date();
+    // this.date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
   }
 
   public void get_date(){
@@ -101,6 +101,7 @@ public class Manager{
   }
 
   public void set_date(int day, int month, int year){
+    System.out.println("In set_date day: " + day + " month: " + month + " year " + year);
     String query = "UPDATE Calendar SET day = ?, month = ?, year = ?";
     try{
       PreparedStatement ps = this.conn.prepareStatement(query);
@@ -142,6 +143,7 @@ public class Manager{
   }
 
   public String get_monthly_statement(String username){
+    System.out.println("In get_monthly_statement username: " + username);
     String get_accounts = "SELECT ID, type FROM Accounts WHERE user = ?";
     String get_market_transactions = "SELECT * FROM Market_Transactions WHERE ID = ?";
     String get_stock_transactions = "SELECT * FROM Stock_Transactions WHERE ID = ?";
@@ -536,7 +538,7 @@ public class Manager{
         ps4.setInt(1, acc_id);
         ps4.setString(2, symbol);
         ResultSet rs4 = ps4.executeQuery();
-        if(!rs4.isBeforeFirst()){
+        if(!rs4.next()){
           rs4.close();
           ps4.close();
           //If doesn't own stock, create new entry in owns
@@ -703,7 +705,7 @@ public class Manager{
       ps.setInt(1, acc_id);
       ps.setString(2, symbol);
       ResultSet rs = ps.executeQuery();
-      if(!rs.isBeforeFirst()){
+      if(!rs.next()){
         result = 0;
       }else{
         result = rs.getInt("amount");
@@ -930,32 +932,47 @@ public class Manager{
   public String monthly_statement(Manager mn) {
      return "monthly Statement";
   }
-  public String customer_report(Manager mn)  {
-   return "customer_report";
+  public String customer_report(String username)  {
+    //Generate a list of all accounts associated with a particular customer and the current balance.
+    // list all accounts associated with a username
+    // use username to find acc_id andcall get_balance(int acc_id) use username to find acc_id
+   return ("In customer_report username: " + username);
   }
   public void add_interest() {
+    //For all market accounts, add the appropriate amount of monthly interest to the balance. This is usually
+    // done at the end of a month.
     return;
   }
   public String generate_DTER(){
+    // Generate a list of all customers who have made more than $10,000 in the last month,
+    // including earnings from buying/selling stocks and interest. The residence state of each customer should
+    // also be listed.
    return "generate_DTER";
   }
 
   public String active_customers() {
-   return "generate_DTER";
+   return "active_customers";
   }
   public void delete_transactions()  {
+    // Delete the list of transactions from each of the accounts, in preparation for a new month of processing.
    return;
   }
   public void set_date(String date) {
     return;
    }
   public void change_stock_price(double newPrice, String stockID) {
+    System.out.println("In change_stock_price newPrice: " + " newPrice " + " stockID " + stockID);
     return;
   }
   public void toggle_market(Boolean open) {
+    if(this.open == true){
+      close_market();
+    }
+    // need to create function for opening market
    return;
   }
   public void insert_data() {
+    // basically reset the data 
    return;
   }
 

@@ -314,12 +314,13 @@ catch(Exception e){
 else if (event.getSource() == viewActorProfile){
    String strStockID = actorProfile.getText();
    try{
-     // if(cs.check_stock_exists(strStockID)){
+     if(cs.check_stock_exists(strStockID)){
       infoArea.append("" + cs.get_actor_profile(strStockID));
-  // }
- //  else{
- //     infoArea.append(strStockID + " is not a valid stock ID.\n");
- // }
+      infoArea.append("" + cs.get_stock_price(strStockID));
+  	}
+  	else{
+     infoArea.append(strStockID + " is not a valid stock ID.\n");
+ 	}
 }
 catch (Exception e){
     e.printStackTrace();
@@ -353,12 +354,12 @@ catch(Exception e){
     		//TRANSACTION HISTORY
 else if (event.getSource() == transactionHistory){
    try{
-    if(cs.check_transaction_history(cs)){
-     infoArea.append(cs.get_transaction_history(cs) + "");
- }
- else{
-     infoArea.append("You have not made any transactions.\n");
- }
+    // if(cs.check_transaction_history()){
+     infoArea.append(cs.get_transaction_history() + "");
+ // }
+ // else{
+ //     infoArea.append("You have not made any transactions.\n");
+ // }
 }
 catch (Exception e){
     e.printStackTrace();

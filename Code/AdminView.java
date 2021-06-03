@@ -150,15 +150,14 @@ public class AdminView extends JFrame {
 		public void actionPerformed(ActionEvent event) {
     		//DEPOSIT
 			if (event.getSource() == gmsButton){
-				String strTax_ID = gmsTextField.getText();
-				if (strTax_ID.isEmpty()){
-					textArea.append("Please enter a Tax ID \n");
+				String get_user_name = gmsTextField.getText();
+				if (get_user_name.isEmpty()){
+					textArea.append("Please enter a username \n");
 				}
 				else{
-					int tax_ID = Integer.parseInt(strTax_ID);
 					String result = "";
 					try{
-						result = mn.monthly_statement(mn);
+						result = mn.get_monthly_statement(get_user_name);
 						textArea.append(result);
 					}
 					catch(Exception e){
@@ -167,15 +166,14 @@ public class AdminView extends JFrame {
 				}
 			}
 			else if (event.getSource() == crButton){
-				String strTax_ID = crTextField.getText();
-				if (strTax_ID.isEmpty()){
-					textArea.append("Please enter a Tax ID \n");
+				String get_user_name = crTextField.getText();
+				if (get_user_name.isEmpty()){
+					textArea.append("Please enter a username \n");
 				}
 				else{
-					int tax_ID = Integer.parseInt(strTax_ID);
 					String result = "";
 					try{
-						result = mn.customer_report(mn);
+						result = mn.customer_report(get_user_name);
 						textArea.append(result);
 					}
 					catch(Exception e){
@@ -221,7 +219,9 @@ public class AdminView extends JFrame {
 			}
 			else if (event.getSource() == setDate){
 				String aDate = dateTextField.getText();
+				// parse date by - and get mm - dd - yy 
 				try{
+					// (int day, int month, int year)
 					mn.set_date(aDate);
 				}
 				catch(Exception e){

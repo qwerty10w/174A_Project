@@ -206,8 +206,67 @@ public class Customer{
     return true;
   }
 
-  public String get_transaction_history(Customer cs)  {
-    return "get transaction history";
+  public String get_transaction_history(Customer cs){
+    return "transaction history";
+  }
+
+  public String get_market_history(){
+    String get_market_transactions = "SELECT * FROM Market_Transactions WHERE ID = ?";
+    String summary = "Market Account Transactions: \n";
+    try{
+      PreparedStatement ps = this.conn.prepareStatement(get_market_transactions);
+      ps.setInt(1, this.market_id);
+      ResultSet market_actions = ps.executeQuery();
+
+      while(market_actions.next()){
+        int type = market_actions.getInt("type");
+        double amount = market_actions.getDouble("amount");
+        String date = market_actions.getString("date");
+        double bal = market_actions.getDouble("balance");
+        if(type == 0){
+          summary += "Withdrew $" + String.valueOf(amount) + " on " + date + " leaving balance: $" + String.valueOf(bal) + "\n";
+        }else if(type == 1){
+          summary += "Deposited $" + String.valueOf(amount) + " on " + date + " leaving balance: $" + String.valueOf(bal) + "\n";
+        }else if(type == 2){
+          summary += "Gained $" + String.valueOf(amount) + " interest on " + date + " leaving balance: " + String.valueOf(bal) + "\n";
+        }
+      }
+
+      market_actions.close();
+      ps.close();
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+    return summary;
+  }
+
+  public String get_stock_history(){
+    String get_stock_transactions = "SELECT * FROM Stock_Transactions WHERE ID = ?";
+    String summary = "Stock Transactions: \n";
+    try{
+      PreparedStatement ps = this.conn.prepareStatement(get_stock_transactions);
+      ps.setInt(1, this.stock_id);
+      ResultSet stock_actions = ps.executeQuery();
+      //add Stock Transactions to result string
+      while(stock_actions.next()){
+        String sym = stock_actions.getString("symbol");
+        int type = stock_actions.getInt("type");
+        String date = stock_actions.getString("date");
+        double amount = stock_actions.getDouble("amount");
+        double bal = stock_actions.getDouble("balance");
+        double earnings = stock_actions.getDouble("earnings");
+        if(type == 0){
+          summary += "Sold " + String.valueOf(amount) + " of " + sym + " stock on " + date + " leaving balance: $" + String.valueOf(bal) + " and earning $" + String.valueOf(earnings) + "\n";
+        }else if(type == 1){
+          summary += "Bought " + String.valueOf(amount) + " of " + sym + " stock on " + date + " leaving balance: $" + String.valueOf(bal) + "\n";
+        }
+      }
+      stock_actions.close();
+      ps.close();
+    }catch (SQLException e){
+      System.out.println(e.getMessage());
+    }
+    return summary;
   }
 
 
@@ -740,7 +799,8 @@ public class Customer{
   public static void main(String[] args){
     Customer m = new Customer();
     m.signup("Neil Sadhukhan", "test Address", "CA", "4088960412", "neil.sad@gmail.com", "test2", "te", 10000);
-    // m.login("test", "te");
-    // m.withdraw(100000000);
+    m.login("test2", "te");
+    System.out.println(m.get_market_history());
+    System.out.println(m.get_stock_history());
   }
 }

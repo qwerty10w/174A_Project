@@ -141,10 +141,11 @@ public class Manager{
     System.out.println("Attributes passed username: " + username + "password: " + password);
   }
 
-  public void get_monthly_statement(String username){
+  public String get_monthly_statement(String username){
     String get_accounts = "SELECT ID, type FROM Accounts WHERE user = ?";
     String get_market_transactions = "SELECT * FROM Market_Transactions WHERE ID = ?";
     String get_stock_transactions = "SELECT * FROM Stock_Transactions WHERE ID = ?";
+    String summary = "Monthly Statement: \n";
 
     int market_id = -1;
     int stock_id = -1;
@@ -167,6 +168,8 @@ public class Manager{
       }
       rs.close();
       ps.close();
+      // System.out.println("Market_id: " + String.valueOf(market_id));
+      // System.out.println("Stock_id: " + String.valueOf(stock_id));
 
       initial_market_balance = this.get_initial_market_balance(market_id, this.year, this.month);
       final_market_balance = this.get_final_market_balance(market_id, this.year, this.month);
@@ -174,40 +177,74 @@ public class Manager{
       PreparedStatement ps2 = this.conn.prepareStatement(get_market_transactions);
       ps2.setInt(1, market_id);
       ResultSet market_actions = ps2.executeQuery();
-      //display transactions on screen
+
+      //add Market Transactions to result string
+      summary += "Market Transactions in month " + String.valueOf(this.month) + ": \n";
+      while(market_actions.next()){
+        int type = market_actions.getInt("type");
+        double amount = market_actions.getDouble("amount");
+        String date = market_actions.getString("date");
+        double bal = market_actions.getDouble("balance");
+        if(type == 0){
+          summary += "Withdrew $" + String.valueOf(amount) + " on " + date + " leaving balance: $" + String.valueOf(bal) + "\n";
+        }else if(type == 1){
+          summary += "Deposited $" + String.valueOf(amount) + " on " + date + " leaving balance: $" + String.valueOf(bal) + "\n";
+        }else if(type == 2){
+          summary += "Gained $" + String.valueOf(amount) + " interest on " + date + " leaving balance: " + String.valueOf(bal) + "\n";
+        }
+      }
       market_actions.close();
       ps2.close();
 
       if(stock_id != -1){
+        summary += "\nStock Transactions this month: \n";
         PreparedStatement ps3 = this.conn.prepareStatement(get_stock_transactions);
-        ps3.setInt(1, market_id);
+        ps3.setInt(1, stock_id);
         ResultSet stock_actions = ps3.executeQuery();
-        //display transactions on screen
+        //add Stock Transactions to result string
+        while(stock_actions.next()){
+          String sym = stock_actions.getString("symbol");
+          int type = stock_actions.getInt("type");
+          String date = stock_actions.getString("date");
+          double amount = stock_actions.getDouble("amount");
+          double bal = stock_actions.getDouble("balance");
+          double earnings = stock_actions.getDouble("earnings");
+          if(type == 0){
+            summary += "Sold " + String.valueOf(amount) + " of " + sym + " stock on " + date + " leaving balance: $" + String.valueOf(bal) + " and earning $" + String.valueOf(earnings) + "\n";
+          }else if(type == 1){
+            summary += "Bought " + String.valueOf(amount) + " of " + sym + " stock on " + date + " leaving balance: $" + String.valueOf(bal) + "\n";
+          }
+        }
         stock_actions.close();
         ps3.close();
 
+        summary += "\n";
+
         double total_earnings = this.get_total_earnings(stock_id, this.year, this.month);
+        // System.out.println("total stock earnings: " + String.valueOf(total_earnings));
         if(total_earnings != -1){
-          System.out.println("congrats you made some money");
+          summary += "Total stock earnings: $" + String.valueOf(total_earnings) + "\n";
+          // System.out.println("congrats you made some money");
           //display earnings on screen
         }
       }
 
       if((initial_market_balance != -1) && (final_market_balance != -1)){
         double market_diff = final_market_balance - initial_market_balance;
-        //display diff on screen
+        summary += "Market account went from $" + String.valueOf(initial_market_balance) + " to $" + String.valueOf(final_market_balance) + "\nTotal earnings/loss: $" + String.valueOf(market_diff) + "\n";
       }
     }catch (SQLException e){
       System.out.println(e.getMessage());
     }
+    return summary;
   }
 
   public double get_initial_market_balance(int acc_id, int year, int month){
     String get_initial_market_balance = "SELECT balance FROM Daily_Market_Balance WHERE ID = ? AND date LIKE ? ORDER BY date LIMIT 1";
     double balance = -1;
     try{
-      String like_string = "\"" + String.valueOf(year) + "-" + String.valueOf(month) + "%\"";
-      PreparedStatement ps = this.conn.prepareStatement("get_initial_market_balance");
+      String like_string = String.valueOf(year) + "-" + String.valueOf(month) + "%";
+      PreparedStatement ps = this.conn.prepareStatement(get_initial_market_balance);
       ps.setInt(1, acc_id);
       ps.setString(2, like_string);
       ResultSet rs = ps.executeQuery();
@@ -217,15 +254,16 @@ public class Manager{
     }catch (SQLException e){
       System.out.println(e.getMessage());
     }
+    // System.out.println("initial balance: " + String.valueOf(balance));
     return balance;
   }
 
   public double get_final_market_balance(int acc_id, int year, int month){
-    String get_initial_market_balance = "SELECT balance FROM Daily_Market_Balance WHERE ID = ? AND date LIKE ? ORDER BY date DESC LIMIT 1";
+    String get_final_market_balance = "SELECT balance FROM Daily_Market_Balance WHERE ID = ? AND date LIKE ? ORDER BY date DESC LIMIT 1";
     double balance = -1;
     try{
-      String like_string = "\"" + String.valueOf(year) + "-" + String.valueOf(month) + "%\"";
-      PreparedStatement ps = this.conn.prepareStatement("get_initial_market_balance");
+      String like_string = String.valueOf(year) + "-" + String.valueOf(month) + "%";
+      PreparedStatement ps = this.conn.prepareStatement(get_final_market_balance);
       ps.setInt(1, acc_id);
       ps.setString(2, like_string);
       ResultSet rs = ps.executeQuery();
@@ -235,25 +273,26 @@ public class Manager{
     }catch (SQLException e){
       System.out.println(e.getMessage());
     }
+    // System.out.println("final balance: " + String.valueOf(balance));
     return balance;
   }
 
   public double get_total_earnings(int acc_id, int year, int month){
     //query
-    String get_total_earnings = "SELECT SUM(EARNINGS) AS total FROM (\n"
+    String get_total_earnings = "SELECT SUM(earnings) AS total FROM (\n"
                                   + "SELECT ID, earnings FROM Stock_Transactions \n"
                                   + "WHERE date LIKE ?) AS t \n"
                                   + "WHERE t.ID = ? \n"
                                   + "GROUP BY t.ID";
     double earnings = -1;
     try{
-      String like_string = "\"" + String.valueOf(year) + "-" + String.valueOf(month) + "%\"";
-      PreparedStatement ps = this.conn.prepareStatement("get_total_earnings");
-      ps.setInt(1, acc_id);
-      ps.setString(2, like_string);
+      String like_string = String.valueOf(year) + "-" + String.valueOf(month) + "%";
+      PreparedStatement ps = this.conn.prepareStatement(get_total_earnings);
+      ps.setString(1, like_string);
+      ps.setInt(2, acc_id);
       ResultSet rs = ps.executeQuery();
       if(rs.next()){
-        earnings = rs.getDouble("balance");
+        earnings = rs.getDouble("total");
       }
     }catch (SQLException e){
       System.out.println(e.getMessage());
@@ -380,7 +419,7 @@ public class Manager{
     double avg_balance = -1;
     try{
       PreparedStatement ps = this.conn.prepareStatement(query);
-      String like_string = "\"" + String.valueOf(year) + "-" + String.valueOf(month) + "%\"";
+      String like_string = String.valueOf(year) + "-" + String.valueOf(month) + "%";
       ps.setString(1, like_string);
       ps.setInt(2, acc_id);
       ResultSet rs = ps.executeQuery();
@@ -888,7 +927,6 @@ public class Manager{
   }
 
 
-
   public String monthly_statement(Manager mn) {
      return "monthly Statement";
   }
@@ -923,6 +961,12 @@ public class Manager{
 
   public static void main(String[] args){
     Manager m = new Manager();
-    m.close_market();
+    // m.buy(27, "SMD", 3);
+    // m.buy(27, "SKB", 2);
+    // m.sell(27, "SMD", 3);
+    // m.deposit(28, 3000);
+    // m.withdraw(28, 2000);
+    // m.close_market();
+    // System.out.println(m.get_monthly_statement("test2"));
   }
 }
